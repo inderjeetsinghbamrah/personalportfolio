@@ -97,6 +97,9 @@ export default function Home() {
       {/* Subtle ambient grid pattern for depth */}
       <div className="fixed inset-0 pointer-events-none ambient-grid z-[1] opacity-60" />
 
+      {/* Central reading contrast shield to ensure text/code legibility */}
+      <div className="fixed inset-0 pointer-events-none z-[2] bg-[radial-gradient(ellipse_at_center,rgba(8,9,13,0.25)_0%,rgba(8,9,13,0.65)_100%)]" />
+
       {/* Clean Navigation Bar */}
       <Navigation activeSection={activeSection} />
 

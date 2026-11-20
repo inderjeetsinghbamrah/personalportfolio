@@ -23,8 +23,8 @@ export const ARCHITECTURE_STAGES: StageKeyframe[] = [
     name: "01 // INGRESS GATEWAY",
     role: "Edge Client Entry & HTTP/3 QUIC Router",
     tech: "Next.js Edge • Cloudflare CDN",
-    posDesktop: [2.7, 0.15, 0.6],
-    posMobile: [0.0, -0.6, -1.2],
+    posDesktop: [3.3, 0.15, -0.4],
+    posMobile: [0.0, -0.9, -3.2],
     rotBase: [0.2, 0.3, 0.1],
     tierSeparation: 0.0,
     raftSpread: 0.0,
@@ -39,10 +39,10 @@ export const ARCHITECTURE_STAGES: StageKeyframe[] = [
     name: "02 // 3-TIER SYSTEMS RUNTIME",
     role: "Exploded Architecture Breakdown",
     tech: "React 19 RSC ➔ Tokio Engine ➔ K8s Pods",
-    posDesktop: [3.1, -0.15, 0.3],
-    posMobile: [1.5, -0.2, -1.8],
+    posDesktop: [3.5, -0.2, -0.6],
+    posMobile: [0.8, -0.5, -3.4],
     rotBase: [0.35, 0.5, 0.0],
-    tierSeparation: 1.35, // Fully exploded view!
+    tierSeparation: 1.1, // Refined exploded view
     raftSpread: 0.0,
     armillary: 0.0,
     turbineMode: 0.0,
@@ -55,11 +55,11 @@ export const ARCHITECTURE_STAGES: StageKeyframe[] = [
     name: "03 // RAFT CONSENSUS CLUSTER",
     role: "Linearizable Distributed Storage Node",
     tech: "Aether-KV • Tokio Actors • io_uring",
-    posDesktop: [-2.9, 0.1, 0.5], // Crosses gracefully to the left side!
-    posMobile: [-1.3, 0.0, -1.8],
+    posDesktop: [-3.5, 0.1, -0.8], // Wide on peripheral left flank
+    posMobile: [-0.8, -0.4, -3.4],
     rotBase: [0.25, -0.4, 0.15],
     tierSeparation: 0.0,
-    raftSpread: 1.6, // Satellites detach into Raft consensus triangle!
+    raftSpread: 1.3, // Satellites detach into Raft consensus triangle
     armillary: 0.0,
     turbineMode: 0.0,
     emitterMode: 0.0,
@@ -71,8 +71,8 @@ export const ARCHITECTURE_STAGES: StageKeyframe[] = [
     name: "04 // GLOBAL ANYCAST MESH",
     role: "Multi-Region Planetary Mesh & PoP Synchronization",
     tech: "SF • Tokyo • Frankfurt • Singapore • London",
-    posDesktop: [2.6, -0.1, 0.4],
-    posMobile: [1.4, -0.1, -1.6],
+    posDesktop: [3.3, -0.1, -0.6],
+    posMobile: [0.7, -0.4, -3.2],
     rotBase: [0.4, 0.6, -0.2],
     tierSeparation: 0.0,
     raftSpread: 0.0,
@@ -87,8 +87,8 @@ export const ARCHITECTURE_STAGES: StageKeyframe[] = [
     name: "05 // BARE-METAL KERNEL ENGINE",
     role: "Asynchronous IO_URING & System Execution Core",
     tech: "Zero-Cost Concurrency • CPU Registers",
-    posDesktop: [0.0, 2.2, -1.0], // Centered above interactive terminal
-    posMobile: [0.0, 1.9, -1.8],
+    posDesktop: [0.0, 1.9, -2.6], // Set deeper above interactive terminal
+    posMobile: [0.0, 1.3, -3.4],
     rotBase: [Math.PI / 2.3, 0, 0],
     tierSeparation: 0.0,
     raftSpread: 0.0,
@@ -103,8 +103,8 @@ export const ARCHITECTURE_STAGES: StageKeyframe[] = [
     name: "06 // SECURE TRANSMISSION DISPATCH",
     role: "Cryptographic Quantum Dispatch Gateway",
     tech: "TLS 1.3 • PGP Handshake • Packet Beacon",
-    posDesktop: [2.5, -0.35, 0.7], // Anchored beside contact form
-    posMobile: [0.0, 0.2, -1.4],
+    posDesktop: [3.1, -0.3, -0.5], // Anchored beside contact form
+    posMobile: [0.0, 0.0, -3.0],
     rotBase: [0.1, 0.0, 0.0],
     tierSeparation: 0.0,
     raftSpread: 0.0,
@@ -184,46 +184,48 @@ export class ArchitectureCore {
     this.coreAssembly = new THREE.Group();
     this.group.add(this.coreAssembly);
 
-    // Inner faceted crystal
-    const octaGeo = new THREE.OctahedronGeometry(0.48, 0);
+    // Inner faceted crystal (Lightened, ethereal)
+    const octaGeo = new THREE.OctahedronGeometry(0.42, 0);
     const octaMat = new THREE.MeshStandardMaterial({
       color: 0x10b981,
-      roughness: 0.2,
-      metalness: 0.85,
+      roughness: 0.45,
+      metalness: 0.8,
       emissive: 0x054e38,
-      emissiveIntensity: 0.6,
+      emissiveIntensity: 0.22,
+      transparent: true,
+      opacity: 0.85,
     });
     this.innerOcta = new THREE.Mesh(octaGeo, octaMat);
     this.coreAssembly.add(this.innerOcta);
     this.disposables.push(octaGeo, octaMat);
 
-    // Outer wireframe cage
-    const icosaGeo = new THREE.IcosahedronGeometry(0.72, 1);
+    // Outer wireframe cage (Delicate hairline wireframe, non-intrusive)
+    const icosaGeo = new THREE.IcosahedronGeometry(0.68, 1);
     const icosaMat = new THREE.MeshBasicMaterial({
       color: 0x34d399,
       wireframe: true,
       transparent: true,
-      opacity: 0.45,
+      opacity: 0.18,
     });
     this.outerIcosa = new THREE.Mesh(icosaGeo, icosaMat);
     this.coreAssembly.add(this.outerIcosa);
     this.disposables.push(icosaGeo, icosaMat);
 
-    // Glowing point light at core center
-    this.coreLight = new THREE.PointLight(0x10b981, 2.8, 9);
+    // Glowing point light at core center (Softened intensity to protect reading contrast)
+    this.coreLight = new THREE.PointLight(0x10b981, 1.2, 8);
     this.coreAssembly.add(this.coreLight);
 
-    // Soft aura glow sprite
+    // Soft aura glow sprite (Gentle ambient glow)
     const auraMat = new THREE.SpriteMaterial({
       map: softDotTexture,
       color: 0x10b981,
       transparent: true,
-      opacity: 0.45,
+      opacity: 0.18,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
     });
     this.auraSprite = new THREE.Sprite(auraMat);
-    this.auraSprite.scale.set(2.4, 2.4, 1);
+    this.auraSprite.scale.set(1.9, 1.9, 1);
     this.coreAssembly.add(this.auraSprite);
     this.disposables.push(auraMat);
 
@@ -231,24 +233,26 @@ export class ArchitectureCore {
     this.ringFrontendGroup = new THREE.Group();
     this.group.add(this.ringFrontendGroup);
 
-    const ring1Geo = new THREE.TorusGeometry(1.22, 0.024, 16, 80);
+    const ring1Geo = new THREE.TorusGeometry(1.22, 0.015, 16, 80);
     const ring1Mat = new THREE.MeshStandardMaterial({
       color: 0x0ea5e9,
-      roughness: 0.25,
+      roughness: 0.35,
       metalness: 0.75,
       emissive: 0x0284c7,
-      emissiveIntensity: 0.4,
+      emissiveIntensity: 0.18,
+      transparent: true,
+      opacity: 0.75,
     });
     this.ring1Mesh = new THREE.Mesh(ring1Geo, ring1Mat);
     this.ringFrontendGroup.add(this.ring1Mesh);
     this.disposables.push(ring1Geo, ring1Mat);
 
     // 4 Virtual DOM Component brackets & 4 orbiting client packets
-    const packetGeo = new THREE.SphereGeometry(0.045, 10, 10);
+    const packetGeo = new THREE.SphereGeometry(0.035, 10, 10);
     const packetMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
     this.disposables.push(packetGeo, packetMat);
 
-    const bracketGeo = new THREE.BoxGeometry(0.03, 0.12, 0.05);
+    const bracketGeo = new THREE.BoxGeometry(0.02, 0.09, 0.04);
     const bracketMat = new THREE.MeshBasicMaterial({ color: 0x0ea5e9 });
     this.disposables.push(bracketGeo, bracketMat);
 
@@ -268,24 +272,26 @@ export class ArchitectureCore {
     this.ringSystemsGroup = new THREE.Group();
     this.group.add(this.ringSystemsGroup);
 
-    const ring2Geo = new THREE.TorusGeometry(1.78, 0.035, 16, 90);
+    const ring2Geo = new THREE.TorusGeometry(1.78, 0.018, 16, 90);
     const ring2Mat = new THREE.MeshStandardMaterial({
       color: 0xf59e0b,
-      roughness: 0.35,
-      metalness: 0.9,
+      roughness: 0.4,
+      metalness: 0.85,
       emissive: 0x92400e,
-      emissiveIntensity: 0.35,
+      emissiveIntensity: 0.18,
+      transparent: true,
+      opacity: 0.75,
     });
     this.ring2Mesh = new THREE.Mesh(ring2Geo, ring2Mat);
     this.ringSystemsGroup.add(this.ring2Mesh);
     this.disposables.push(ring2Geo, ring2Mat);
 
-    // 16 Mechanical turbine teeth
-    const toothGeo = new THREE.BoxGeometry(0.03, 0.12, 0.07);
+    // 16 Mechanical turbine teeth (Streamlined)
+    const toothGeo = new THREE.BoxGeometry(0.02, 0.09, 0.04);
     const toothMat = new THREE.MeshStandardMaterial({
       color: 0xd97706,
       metalness: 0.85,
-      roughness: 0.3,
+      roughness: 0.35,
     });
     this.disposables.push(toothGeo, toothMat);
 
@@ -299,7 +305,7 @@ export class ArchitectureCore {
     }
 
     // 4 3D Byte Registers (simulated memory safety allocation blocks)
-    const byteGeo = new THREE.BoxGeometry(0.16, 0.09, 0.06);
+    const byteGeo = new THREE.BoxGeometry(0.12, 0.07, 0.04);
     const byteMat = new THREE.MeshBasicMaterial({ color: 0x1e293b });
     const byteLedMat = new THREE.MeshBasicMaterial({ color: 0x10b981 });
     this.disposables.push(byteGeo, byteMat, byteLedMat);
@@ -310,8 +316,8 @@ export class ArchitectureCore {
       byteBlock.position.set(Math.cos(angle) * 1.78, Math.sin(angle) * 1.78, 0);
       byteBlock.rotation.z = angle;
 
-      const led = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.05, 0.07), byteLedMat);
-      led.position.set(0.04, 0, 0);
+      const led = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 0.05), byteLedMat);
+      led.position.set(0.03, 0, 0);
       byteBlock.add(led);
 
       this.ringSystemsGroup.add(byteBlock);
@@ -322,24 +328,26 @@ export class ArchitectureCore {
     this.ringCloudGroup = new THREE.Group();
     this.group.add(this.ringCloudGroup);
 
-    const ring3Geo = new THREE.TorusGeometry(2.36, 0.024, 16, 100);
+    const ring3Geo = new THREE.TorusGeometry(2.36, 0.015, 16, 100);
     const ring3Mat = new THREE.MeshStandardMaterial({
       color: 0x38bdf8,
-      roughness: 0.4,
+      roughness: 0.45,
       metalness: 0.7,
       transparent: true,
-      opacity: 0.65,
+      opacity: 0.30,
+      emissive: 0x0284c7,
+      emissiveIntensity: 0.10,
     });
     this.ring3Mesh = new THREE.Mesh(ring3Geo, ring3Mat);
     this.ringCloudGroup.add(this.ring3Mesh);
     this.disposables.push(ring3Geo, ring3Mat);
 
     // 3 Container Pod Satellites (Raft cluster members)
-    const podGeo = new THREE.BoxGeometry(0.18, 0.18, 0.18);
+    const podGeo = new THREE.BoxGeometry(0.13, 0.13, 0.13);
     const podEdgeGeo = new THREE.WireframeGeometry(podGeo);
     const podMat = new THREE.MeshStandardMaterial({
       color: 0x0f172a,
-      roughness: 0.3,
+      roughness: 0.35,
       metalness: 0.8,
     });
     const podEdgeMat = new THREE.LineBasicMaterial({ color: 0x38bdf8 });
@@ -350,10 +358,10 @@ export class ArchitectureCore {
       const body = new THREE.Mesh(podGeo, podMat);
       const wire = new THREE.LineSegments(podEdgeGeo, podEdgeMat);
       const beacon = new THREE.Mesh(
-        new THREE.SphereGeometry(0.04, 8, 8),
+        new THREE.SphereGeometry(0.03, 8, 8),
         new THREE.MeshBasicMaterial({ color: 0x10b981 })
       );
-      beacon.position.set(0, 0.12, 0);
+      beacon.position.set(0, 0.09, 0);
       pod.add(body, wire, beacon);
 
       this.group.add(pod);
@@ -367,7 +375,7 @@ export class ArchitectureCore {
     const conduitLineMat = new THREE.LineBasicMaterial({
       color: 0x34d399,
       transparent: true,
-      opacity: 0.45,
+      opacity: 0.25,
     });
     this.disposables.push(conduitLineMat);
 
@@ -396,7 +404,7 @@ export class ArchitectureCore {
     const raftMat = new THREE.LineBasicMaterial({
       color: 0xf59e0b,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.35,
     });
     this.raftLaserLines = new THREE.LineSegments(raftGeo, raftMat);
     this.raftLaserLines.visible = false;
@@ -418,7 +426,7 @@ export class ArchitectureCore {
     this.disposables.push(shockGeo, shockMat);
 
     // 7. Ionization Swarm Particles (Surrounding data cloud)
-    const swarmCount = 110;
+    const swarmCount = 75;
     const swarmGeo = new THREE.BufferGeometry();
     const swarmPos = new Float32Array(swarmCount * 3);
     const swarmColors = new Float32Array(swarmCount * 3);
@@ -447,7 +455,7 @@ export class ArchitectureCore {
     swarmGeo.setAttribute("color", new THREE.BufferAttribute(swarmColors, 3));
 
     const swarmMat = new THREE.PointsMaterial({
-      size: 0.07,
+      size: 0.04,
       vertexColors: true,
       transparent: true,
       opacity: 0.55,
@@ -524,6 +532,15 @@ export class ArchitectureCore {
       pos1[2] + (pos2[2] - pos1[2]) * t
     );
 
+    // Parabolic depth sag: when transitioning across horizontal flanks, curve deep into background
+    // to prevent any collision with central headings, filter bars, and reading content
+    const deltaX = Math.abs(pos1[0] - pos2[0]);
+    if (deltaX > 2.0) {
+      const crossoverFactor = Math.sin(t * Math.PI); // 0 at endpoints, 1.0 at midpoint
+      targetPos.z -= crossoverFactor * (isDesktop ? 2.6 : 1.8);
+      targetPos.y -= crossoverFactor * 0.35;
+    }
+
     const targetRot = new THREE.Vector3(
       k1.rotBase[0] + (k2.rotBase[0] - k1.rotBase[0]) * t,
       k1.rotBase[1] + (k2.rotBase[1] - k1.rotBase[1]) * t,
@@ -572,6 +589,10 @@ export class ArchitectureCore {
     // 1. Position & Base Rotation Spring Lerp
     this.smoothPos.lerp(params.targetPos, 0.055);
     this.group.position.copy(this.smoothPos);
+
+    // Responsive dynamic scale: keep lightweight footprint on all screens
+    const targetScale = isDesktop ? 0.78 : 0.48;
+    this.group.scale.set(targetScale, targetScale, targetScale);
 
     // Add mouse parallax
     this.group.position.x += mouseX * (isDesktop ? 0.35 : 0.15);

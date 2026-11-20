@@ -49,11 +49,11 @@ export default function HeroSection() {
 
       {/* Main Headline */}
       <div className="max-w-3xl space-y-6">
-        <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.12]">
+        <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.12] drop-shadow-[0_4px_24px_rgba(0,0,0,0.85)]">
           {profile.headline}
         </h1>
 
-        <p className="text-lg sm:text-xl text-slate-300 leading-relaxed font-normal">
+        <p className="text-lg sm:text-xl text-slate-300 leading-relaxed font-normal drop-shadow-[0_2px_12px_rgba(0,0,0,0.7)]">
           {profile.bio}
         </p>
 

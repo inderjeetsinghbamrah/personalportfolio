@@ -5,6 +5,7 @@ import * as THREE from "three";
 import { ArchitectureCore } from "./ArchitectureCore";
 
 export type VisualEngineMode = "stream" | "horizon" | "mesh" | "globe";
+export type VisualIntensityMode = "delicate" | "balanced" | "vivid" | "zen";
 
 interface ThreeCanvasProps {
   scrollProgress: number;
@@ -17,6 +18,7 @@ export default function ThreeCanvas({ scrollProgress, activeSection }: ThreeCanv
   const sectionRef = useRef<string>(activeSection);
   const activeModeRef = useRef<VisualEngineMode>("stream");
   const [, setModeState] = useState<VisualEngineMode>("stream");
+  const [intensityState, setIntensityState] = useState<VisualIntensityMode>("delicate");
 
   useEffect(() => {
     scrollRef.current = scrollProgress;
@@ -34,9 +36,14 @@ export default function ThreeCanvas({ scrollProgress, activeSection }: ThreeCanv
       setModeState(saved);
     }
 
+    const savedIntensity = localStorage.getItem("portfolio_visual_intensity") as VisualIntensityMode | null;
+    if (savedIntensity && ["delicate", "balanced", "vivid", "zen"].includes(savedIntensity)) {
+      setIntensityState(savedIntensity);
+    }
+
     // --- THREE.JS SCENE SETUP ---
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x08090d, 0.045);
+    scene.fog = new THREE.FogExp2(0x08090d, 0.052);
 
     const camera = new THREE.PerspectiveCamera(
       45,
@@ -56,15 +63,15 @@ export default function ThreeCanvas({ scrollProgress, activeSection }: ThreeCanv
     renderer.setClearColor(0x08090d, 1);
     container.appendChild(renderer.domElement);
 
-    // --- LIGHTING ---
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    // --- LIGHTING (Softened ambient & point lights for reading comfort) ---
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
-    const coreLight = new THREE.PointLight(0x10b981, 2.0, 15);
+    const coreLight = new THREE.PointLight(0x10b981, 1.2, 12);
     coreLight.position.set(2, 1, 4);
     scene.add(coreLight);
 
-    const secondaryLight = new THREE.PointLight(0x0ea5e9, 1.8, 15);
+    const secondaryLight = new THREE.PointLight(0x0ea5e9, 1.0, 12);
     secondaryLight.position.set(-2, -1, 4);
     scene.add(secondaryLight);
 
@@ -157,10 +164,10 @@ export default function ThreeCanvas({ scrollProgress, activeSection }: ThreeCanv
     streamGeo.setAttribute("color", new THREE.BufferAttribute(streamColors, 3));
 
     const streamMat = new THREE.PointsMaterial({
-      size: 0.08,
+      size: 0.05,
       vertexColors: true,
       transparent: true,
-      opacity: 0.65,
+      opacity: 0.35,
       map: softDotTexture,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
@@ -174,7 +181,7 @@ export default function ThreeCanvas({ scrollProgress, activeSection }: ThreeCanv
       color: 0x1e293b,
       wireframe: true,
       transparent: true,
-      opacity: 0.12,
+      opacity: 0.06,
     });
     const streamPlane = new THREE.Mesh(streamPlaneGeo, streamPlaneMat);
     streamPlane.position.set(0, -2.8, -1.5);
@@ -203,7 +210,7 @@ export default function ThreeCanvas({ scrollProgress, activeSection }: ThreeCanv
       color: 0x10b981,
       wireframe: true,
       transparent: true,
-      opacity: 0.22,
+      opacity: 0.14,
     });
     const horizonMesh = new THREE.Mesh(horizonGeo, horizonMat);
     horizonMesh.position.set(0, -2.5, -3.5);
@@ -221,7 +228,7 @@ export default function ThreeCanvas({ scrollProgress, activeSection }: ThreeCanv
     const beaconMat = new THREE.LineBasicMaterial({
       color: 0x0ea5e9,
       transparent: true,
-      opacity: 0.25,
+      opacity: 0.16,
     });
     const beaconLines = new THREE.LineSegments(beaconGeo, beaconMat);
     horizonGroup.add(beaconLines);
@@ -287,7 +294,7 @@ export default function ThreeCanvas({ scrollProgress, activeSection }: ThreeCanv
     const meshLinesMat = new THREE.LineBasicMaterial({
       color: 0x38bdf8,
       transparent: true,
-      opacity: 0.2,
+      opacity: 0.12,
     });
     const meshLines = new THREE.LineSegments(meshLinesGeo, meshLinesMat);
     meshGroup.add(meshLines);
@@ -349,10 +356,10 @@ export default function ThreeCanvas({ scrollProgress, activeSection }: ThreeCanv
     globeGeo.setAttribute("color", new THREE.BufferAttribute(globeColors, 3));
 
     const globeMat = new THREE.PointsMaterial({
-      size: 0.065,
+      size: 0.045,
       vertexColors: true,
       transparent: true,
-      opacity: 0.55,
+      opacity: 0.32,
       map: softDotTexture,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
@@ -365,7 +372,7 @@ export default function ThreeCanvas({ scrollProgress, activeSection }: ThreeCanv
       color: 0x334155,
       wireframe: true,
       transparent: true,
-      opacity: 0.12,
+      opacity: 0.08,
     });
     const equator = new THREE.Mesh(new THREE.TorusGeometry(globeRadius, 0.007, 8, 70), ringMat);
     equator.rotation.x = Math.PI / 2;
@@ -431,7 +438,7 @@ export default function ThreeCanvas({ scrollProgress, activeSection }: ThreeCanv
       const lineMat = new THREE.LineBasicMaterial({
         color: 0x0ea5e9,
         transparent: true,
-        opacity: 0.22,
+        opacity: 0.14,
       });
       const arcLine = new THREE.Line(lineGeo, lineMat);
       globeGroup.add(arcLine);
@@ -447,7 +454,7 @@ export default function ThreeCanvas({ scrollProgress, activeSection }: ThreeCanv
     });
 
     // ==============================================================
-    // VISUAL ENGINE SWITCHING LISTENER
+    // VISUAL ENGINE & INTENSITY SWITCHING LISTENERS
     // ==============================================================
     const updateActiveVisualMode = (mode: VisualEngineMode) => {
       activeModeRef.current = mode;
@@ -470,6 +477,15 @@ export default function ThreeCanvas({ scrollProgress, activeSection }: ThreeCanv
       }
     };
     window.addEventListener("set-visual-engine", handleSwitchEngineEvent as EventListener);
+
+    const handleSwitchIntensityEvent = (e: Event) => {
+      const customEvent = e as CustomEvent<VisualIntensityMode>;
+      if (customEvent.detail) {
+        setIntensityState(customEvent.detail);
+        localStorage.setItem("portfolio_visual_intensity", customEvent.detail);
+      }
+    };
+    window.addEventListener("set-visual-intensity", handleSwitchIntensityEvent as EventListener);
 
     // ==============================================================
     // CORE PULSE & DISPATCH EVENT LISTENERS
@@ -707,6 +723,7 @@ export default function ThreeCanvas({ scrollProgress, activeSection }: ThreeCanv
       window.removeEventListener("trigger-core-dispatch", handleCoreDispatch);
       window.removeEventListener("trigger-pipeline-stress", handleStress);
       window.removeEventListener("set-visual-engine", handleSwitchEngineEvent as EventListener);
+      window.removeEventListener("set-visual-intensity", handleSwitchIntensityEvent as EventListener);
       if (stressTimer) clearTimeout(stressTimer);
 
       if (container.contains(renderer.domElement)) {
@@ -744,10 +761,25 @@ export default function ThreeCanvas({ scrollProgress, activeSection }: ThreeCanv
     };
   }, []);
 
+  const getIntensityClass = () => {
+    switch (intensityState) {
+      case "delicate":
+        return "opacity-50";
+      case "balanced":
+        return "opacity-70";
+      case "vivid":
+        return "opacity-95";
+      case "zen":
+        return "opacity-20";
+      default:
+        return "opacity-50";
+    }
+  };
+
   return (
     <div
       ref={mountRef}
-      className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-95 transition-opacity duration-1000"
+      className={`fixed inset-0 pointer-events-none z-0 overflow-hidden ${getIntensityClass()} transition-opacity duration-700`}
       aria-hidden="true"
     />
   );

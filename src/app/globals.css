@@ -49,18 +49,20 @@ body {
   background: #334155;
 }
 
-/* Tasteful, elegant card styling with high contrast */
+/* Tasteful, elegant card styling with high contrast & crisp text readability */
 .card-clean {
-  background: rgba(15, 18, 25, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(10, 13, 20, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+  box-shadow: 0 12px 36px -8px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+  transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .card-clean:hover {
-  border-color: rgba(255, 255, 255, 0.18);
-  background: rgba(18, 22, 31, 0.85);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(14, 18, 27, 0.94);
+  box-shadow: 0 16px 44px -8px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
 }
 
 /* Subtle, soft ambient background grid */

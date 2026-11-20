@@ -75,28 +75,29 @@ export default function StackDeepDive() {
 
   return (
     <section id="stack" className="relative py-28 px-6 md:px-12 max-w-6xl mx-auto z-10">
-      {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-white/[0.08] pb-6">
-        <div>
-          <div className="text-xs font-mono text-emerald-400 font-semibold tracking-wider mb-2">
-            02 / ARCHITECTURE &amp; RUNTIME
+      {/* Section Header with protective frosted contrast & ambient reading shield */}
+      <div className="relative p-6 sm:p-8 rounded-3xl bg-[#0a0d14]/85 backdrop-blur-xl border border-white/[0.08] mb-12 shadow-2xl flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="max-w-xl">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[11px] font-mono text-emerald-400 font-semibold tracking-wider mb-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span>02 // ARCHITECTURE &amp; RUNTIME</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
             How I Build Systems
           </h2>
-          <p className="text-base text-slate-400 font-normal mt-2 max-w-xl">
+          <p className="text-sm sm:text-base text-slate-300 font-normal mt-2 leading-relaxed">
             A breakdown of architectural decisions across frontend reactivity, low-level backend performance, and deployment infrastructure.
           </p>
         </div>
 
-        {/* Tab Switcher */}
-        <div className="flex items-center bg-white/[0.03] p-1 rounded-xl border border-white/[0.08] gap-1">
+        {/* Tab Switcher with dark frosted shield */}
+        <div className="flex items-center bg-[#07090f]/90 backdrop-blur-md p-1.5 rounded-xl border border-white/[0.1] gap-1 shadow-inner">
           <button
             onClick={() => setActiveTab("frontend")}
             className={`px-4 py-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === "frontend"
-                ? "bg-white/10 text-white shadow-sm font-semibold"
-                : "text-slate-400 hover:text-white"
+                ? "bg-white/15 text-white shadow-sm font-semibold border border-white/10"
+                : "text-slate-400 hover:text-white hover:bg-white/[0.04]"
             }`}
           >
             React &amp; Next.js
@@ -105,8 +106,8 @@ export default function StackDeepDive() {
             onClick={() => setActiveTab("rust")}
             className={`px-4 py-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === "rust"
-                ? "bg-white/10 text-white shadow-sm font-semibold"
-                : "text-slate-400 hover:text-white"
+                ? "bg-white/15 text-white shadow-sm font-semibold border border-white/10"
+                : "text-slate-400 hover:text-white hover:bg-white/[0.04]"
             }`}
           >
             Rust Systems
@@ -115,8 +116,8 @@ export default function StackDeepDive() {
             onClick={() => setActiveTab("devops")}
             className={`px-4 py-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === "devops"
-                ? "bg-white/10 text-white shadow-sm font-semibold"
-                : "text-slate-400 hover:text-white"
+                ? "bg-white/15 text-white shadow-sm font-semibold border border-white/10"
+                : "text-slate-400 hover:text-white hover:bg-white/[0.04]"
             }`}
           >
             DevOps &amp; Cloud
