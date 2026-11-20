@@ -9,6 +9,7 @@ import {
   Server, 
   Code2 
 } from "lucide-react";
+import { sound } from "@/lib/sound";
 
 export default function StackDeepDive() {
   const [activeTab, setActiveTab] = useState<"frontend" | "rust" | "devops">("frontend");
@@ -93,7 +94,13 @@ export default function StackDeepDive() {
         {/* Tab Switcher with dark frosted shield */}
         <div className="flex items-center bg-[#07090f]/90 backdrop-blur-md p-1.5 rounded-xl border border-white/[0.1] gap-1 shadow-inner">
           <button
-            onClick={() => setActiveTab("frontend")}
+            onClick={() => {
+              setActiveTab("frontend");
+              sound.playClick();
+              window.dispatchEvent(
+                new CustomEvent("set-architecture-stage", { detail: { stageIndex: 1 } })
+              );
+            }}
             className={`px-4 py-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === "frontend"
                 ? "bg-white/15 text-white shadow-sm font-semibold border border-white/10"
@@ -103,7 +110,13 @@ export default function StackDeepDive() {
             React &amp; Next.js
           </button>
           <button
-            onClick={() => setActiveTab("rust")}
+            onClick={() => {
+              setActiveTab("rust");
+              sound.playClick();
+              window.dispatchEvent(
+                new CustomEvent("set-architecture-stage", { detail: { stageIndex: 2 } })
+              );
+            }}
             className={`px-4 py-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === "rust"
                 ? "bg-white/15 text-white shadow-sm font-semibold border border-white/10"
@@ -113,7 +126,13 @@ export default function StackDeepDive() {
             Rust Systems
           </button>
           <button
-            onClick={() => setActiveTab("devops")}
+            onClick={() => {
+              setActiveTab("devops");
+              sound.playClick();
+              window.dispatchEvent(
+                new CustomEvent("set-architecture-stage", { detail: { stageIndex: 3 } })
+              );
+            }}
             className={`px-4 py-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === "devops"
                 ? "bg-white/15 text-white shadow-sm font-semibold border border-white/10"

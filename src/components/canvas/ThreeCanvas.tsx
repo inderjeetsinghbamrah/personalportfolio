@@ -487,6 +487,24 @@ export default function ThreeCanvas({ scrollProgress, activeSection }: ThreeCanv
     };
     window.addEventListener("set-visual-intensity", handleSwitchIntensityEvent as EventListener);
 
+    // Direct stage synchronization listener (from interactive project cards & tabs)
+    const handleSetArchStage = (e: Event) => {
+      const customEvent = e as CustomEvent<{ stageIndex: number | null }>;
+      if (customEvent.detail !== undefined) {
+        architectureCore.setManualStage(customEvent.detail.stageIndex);
+      }
+    };
+    window.addEventListener("set-architecture-stage", handleSetArchStage as EventListener);
+
+    // Interactive pointer/touch drag rotation listener
+    const handleDragModel = (e: Event) => {
+      const customEvent = e as CustomEvent<{ dx: number; dy: number }>;
+      if (customEvent.detail) {
+        architectureCore.applyDragDelta(customEvent.detail.dx, customEvent.detail.dy);
+      }
+    };
+    window.addEventListener("drag-3d-model", handleDragModel as EventListener);
+
     // ==============================================================
     // CORE PULSE & DISPATCH EVENT LISTENERS
     // ==============================================================
@@ -724,6 +742,8 @@ export default function ThreeCanvas({ scrollProgress, activeSection }: ThreeCanv
       window.removeEventListener("trigger-pipeline-stress", handleStress);
       window.removeEventListener("set-visual-engine", handleSwitchEngineEvent as EventListener);
       window.removeEventListener("set-visual-intensity", handleSwitchIntensityEvent as EventListener);
+      window.removeEventListener("set-architecture-stage", handleSetArchStage as EventListener);
+      window.removeEventListener("drag-3d-model", handleDragModel as EventListener);
       if (stressTimer) clearTimeout(stressTimer);
 
       if (container.contains(renderer.domElement)) {
@@ -764,15 +784,15 @@ export default function ThreeCanvas({ scrollProgress, activeSection }: ThreeCanv
   const getIntensityClass = () => {
     switch (intensityState) {
       case "delicate":
-        return "opacity-50";
+        return "opacity-75";
       case "balanced":
-        return "opacity-70";
+        return "opacity-88";
       case "vivid":
-        return "opacity-95";
+        return "opacity-100";
       case "zen":
-        return "opacity-20";
+        return "opacity-25";
       default:
-        return "opacity-50";
+        return "opacity-75";
     }
   };
 
