@@ -3,8 +3,13 @@ import { createClient } from "@supabase/supabase-js";
 export const supabaseUrl =
   process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 
-export const supabaseAnonKey =
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+export const supabasePublishableKey =
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  "";
+
+// Alias for backward compatibility
+export const supabaseAnonKey = supabasePublishableKey;
 
 export const supabaseProjectRef =
   process.env.NEXT_PUBLIC_SUPABASE_PROJECT_REF || "";
@@ -15,7 +20,7 @@ export const supabaseProjectName =
 // Singleton Supabase Client
 export const supabase = createClient(
   supabaseUrl || "https://placeholder.supabase.co",
-  supabaseAnonKey || "placeholder",
+  supabasePublishableKey || "placeholder",
   {
     auth: {
       persistSession: true,
@@ -93,7 +98,7 @@ export async function checkSupabaseHealth(): Promise<{
   try {
     const res = await fetch(`${supabaseUrl}/auth/v1/health`, {
       headers: {
-        apikey: supabaseAnonKey,
+        apikey: supabasePublishableKey,
       },
       cache: "no-store",
     });
