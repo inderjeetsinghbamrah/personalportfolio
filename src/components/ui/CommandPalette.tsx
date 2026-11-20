@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { 
   Search, 
   Command, 
@@ -14,6 +15,7 @@ import {
   Volume2, 
   Sparkles,
   Activity,
+  Shield,
   X 
 } from "lucide-react";
 import { sound } from "@/lib/sound";
@@ -34,6 +36,7 @@ interface CommandPaletteProps {
 }
 
 export default function CommandPalette({ isOpen, onClose, onOpenResume }: CommandPaletteProps) {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -87,6 +90,17 @@ export default function CommandPalette({ isOpen, onClose, onOpenResume }: Comman
       icon: <Zap className="w-4 h-4 text-amber-400" />,
       shortcut: "S",
       action: triggerStressTest,
+    },
+    {
+      id: "admin-panel",
+      title: "Systems Admin Console (Owner Secret Gate)",
+      category: "Actions",
+      icon: <Shield className="w-4 h-4 text-emerald-400" />,
+      shortcut: "⌥A",
+      action: () => {
+        onClose();
+        router.push("/admin");
+      },
     },
     {
       id: "nav-hero",

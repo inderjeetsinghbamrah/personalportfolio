@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Terminal, RotateCcw } from "lucide-react";
 import { supabaseProjectRef, supabaseUrl } from "@/lib/supabase";
+import { getPortfolioData } from "@/lib/portfolio-data";
 
 interface TerminalLine {
   type: "input" | "output" | "error" | "system";
@@ -114,15 +115,18 @@ Usage: Type 'anim horizon', 'anim stream', 'anim mesh', or 'anim globe'.`,
         });
         break;
 
-      case "whoami":
+      case "whoami": {
+        const pData = getPortfolioData();
         newLines.push({
           type: "output",
-          text: `Developer: Inderjeet
-Role: Full-Stack Systems Engineer
-Focus: React Server Components, Next.js, low-level Rust microservices, Kubernetes.
-Values: Mathematical memory safety, zero-cost abstractions, seamless responsive UI.`,
+          text: `Developer: ${pData.profile.name}
+Role: ${pData.profile.role}
+Status: ${pData.profile.statusBadge}
+Timezone: ${pData.profile.timezoneOverlap}
+Contact: ${pData.profile.email}`,
         });
         break;
+      }
 
       case "stack":
         newLines.push({
@@ -155,14 +159,31 @@ DevOps:     Docker Distroless, Kubernetes (K8s), Helm, Terraform, GitHub Actions
         });
         break;
 
-      case "projects":
+      case "projects": {
+        const pData = getPortfolioData();
+        const listStr = pData.projects
+          .map((p, idx) => `${idx + 1}. ${p.title} - ${p.subtitle} (${p.stack.slice(0, 2).join(", ")})`)
+          .join("\n");
         newLines.push({
           type: "output",
-          text: `1. Aether-KV     - Raft consensus distributed key-value store (Rust)
-2. Hyperion Next - High-throughput streaming analytics platform (Next.js 14)
-3. Orbit-Kube    - Autonomous Kubernetes canary rollout controller (K8s / Rust)
-4. Photon-Canvas - Real-time 3D collaborative spatial canvas (Three.js / WASM)`,
+          text: listStr || "No projects loaded.",
         });
+        break;
+      }
+
+      case "admin":
+      case "sudo":
+      case "sudo admin":
+      case "override":
+        newLines.push({
+          type: "system",
+          text: `[SYSTEMS OVERRIDE DETECTED]
+  • Secret Route: /admin
+  • Redirecting to Owner Control Console...`,
+        });
+        setTimeout(() => {
+          window.location.href = "/admin";
+        }, 1000);
         break;
 
       case "supabase":

@@ -1,19 +1,25 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { sound } from "@/lib/sound";
 import { Volume2, VolumeX, Menu, X, ArrowUpRight, FileText } from "lucide-react";
 import ResumeModal from "@/components/ui/ResumeModal";
+import { usePortfolioData } from "@/lib/portfolio-data";
 
 interface NavProps {
   activeSection: string;
 }
 
 export default function Navigation({ activeSection }: NavProps) {
+  const router = useRouter();
+  const { data } = usePortfolioData();
+  const profile = data.profile;
   const [isMuted, setIsMuted] = useState(sound.getMuted());
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [resumeOpen, setResumeOpen] = useState(false);
+  const [secretBeaconClicks, setSecretBeaconClicks] = useState(0);
 
   useEffect(() => {
     const unsub = sound.subscribe((muted) => setIsMuted(muted));
@@ -62,13 +68,27 @@ export default function Navigation({ activeSection }: NavProps) {
             onClick={() => handleNavClick("#hero")}
             className="flex items-center gap-3 cursor-pointer group"
           >
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/90 group-hover:scale-125 transition-transform duration-300 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+            <span 
+              onClick={(e) => {
+                e.stopPropagation();
+                sound.playClick();
+                const next = secretBeaconClicks + 1;
+                if (next >= 5) {
+                  setSecretBeaconClicks(0);
+                  router.push("/admin");
+                } else {
+                  setSecretBeaconClicks(next);
+                }
+              }}
+              title="Systems Status Active"
+              className="w-2.5 h-2.5 rounded-full bg-emerald-400/90 group-hover:scale-125 transition-transform duration-300 shadow-[0_0_8px_rgba(16,185,129,0.5)] cursor-pointer" 
+            />
             <div className="flex flex-col">
               <span className="text-sm font-semibold tracking-tight text-white group-hover:text-emerald-400 transition-colors">
-                Inderjeet
+                {profile.name}
               </span>
               <span className="text-xs text-slate-400 hidden sm:inline">
-                Full-Stack &amp; Systems Engineer
+                {profile.role}
               </span>
             </div>
           </div>

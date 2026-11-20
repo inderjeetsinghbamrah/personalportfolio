@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import Navigation from "@/components/layout/Navigation";
 import HeroSection from "@/components/sections/HeroSection";
@@ -21,6 +22,7 @@ const ThreeCanvas = dynamic(() => import("@/components/canvas/ThreeCanvas"), {
 });
 
 export default function Home() {
+  const router = useRouter();
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeSection, setActiveSection] = useState("hero");
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
@@ -68,11 +70,14 @@ export default function Home() {
       }
     });
 
-    // Global Command Palette Shortcut: Cmd+K or Ctrl+K
+    // Global Shortcuts: Cmd+K (Palette) and Ctrl+Shift+A (Hidden Admin Gate)
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
         setCommandPaletteOpen((prev) => !prev);
+      } else if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === "a" || e.key === "A")) {
+        e.preventDefault();
+        router.push("/admin");
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -82,7 +87,7 @@ export default function Home() {
       window.removeEventListener("keydown", handleKeyDown);
       observers.forEach((obs) => obs.disconnect());
     };
-  }, []);
+  }, [router]);
 
   return (
     <main className="relative min-h-screen bg-[#08090d] text-slate-100 selection:bg-emerald-500/20 selection:text-emerald-200">

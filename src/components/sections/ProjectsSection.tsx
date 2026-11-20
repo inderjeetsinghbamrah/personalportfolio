@@ -3,116 +3,31 @@
 import React, { useState } from "react";
 import { Terminal, CheckCircle2, Layers, ArrowUpRight } from "lucide-react";
 import ArchitectureModal from "@/components/ui/ArchitectureModal";
-
-interface Project {
-  id: string;
-  title: string;
-  subtitle: string;
-  category: "rust" | "nextjs" | "devops" | "spatial";
-  badge: string;
-  badgeColor: string;
-  description: string;
-  highlights: string[];
-  metrics: { label: string; value: string }[];
-  stack: string[];
-  terminalCmd: string;
-}
-
-const projects: Project[] = [
-  {
-    id: "aether-kv",
-    title: "Aether-KV",
-    subtitle: "Distributed Raft Key-Value Storage Engine",
-    category: "rust",
-    badge: "Rust / Systems",
-    badgeColor: "text-amber-400 bg-amber-400/10 border-amber-400/20",
-    description:
-      "A distributed, linearizable key-value store engineered in Rust. Implements the Raft consensus protocol with an LSM-Tree storage hierarchy, io_uring asynchronous Linux I/O, and zero-copy gRPC transport.",
-    highlights: [
-      "Zero-cost Tokio asynchronous actor model for request routing",
-      "Memory footprint capped at 14MB under 100k concurrent connections",
-      "Deterministic crash recovery via write-ahead logging (WAL)",
-    ],
-    metrics: [
-      { label: "Throughput", value: "240k req/s" },
-      { label: "P99 Latency", value: "0.85 ms" },
-      { label: "Memory Footprint", value: "14 MB" },
-    ],
-    stack: ["Rust", "Tokio", "gRPC", "io_uring", "Raft", "Docker"],
-    terminalCmd: "cargo install aether-kv && aether-kv --cluster-size 5",
-  },
-  {
-    id: "hyperion-next",
-    title: "Hyperion Platform",
-    subtitle: "Streaming Edge Telemetry & Analytics Dashboard",
-    category: "nextjs",
-    badge: "Next.js / Full-Stack",
-    badgeColor: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20",
-    description:
-      "A high-throughput distributed analytics dashboard built with Next.js 14 App Router and React Server Components. Utilizes progressive streaming SSR over HTTP/2 and edge middleware to deliver real-time data feeds with minimal client bundle size.",
-    highlights: [
-      "Sub-15ms edge time-to-first-byte (TTFB) across 300+ CDN points of presence",
-      "Hybrid rendering architecture: static navigation shells with streaming Suspense lists",
-      "Dynamic data visualization with custom WebGL canvas shaders",
-    ],
-    metrics: [
-      { label: "Lighthouse Score", value: "100/100" },
-      { label: "Edge TTFB", value: "12 ms" },
-      { label: "JS Bundle Reduction", value: "-45%" },
-    ],
-    stack: ["Next.js 14", "React 19", "TypeScript", "Tailwind CSS", "Zustand", "Cloudflare"],
-    terminalCmd: "npx create-hyperion-client@latest --template enterprise",
-  },
-  {
-    id: "orbit-kube",
-    title: "Orbit-Kube",
-    subtitle: "Autonomous Kubernetes Canary Rollout Controller",
-    category: "devops",
-    badge: "DevOps / Cloud",
-    badgeColor: "text-sky-400 bg-sky-400/10 border-sky-400/20",
-    description:
-      "A custom Kubernetes operator written in Rust using kube-rs that automates canary rollouts and traffic shifting based on real-time Prometheus error budget thresholds and eBPF network telemetry.",
-    highlights: [
-      "Automated instant rollback when P99 latency breaches 150ms",
-      "Distroless scratch Docker multi-stage images (18.2MB size)",
-      "Declarative Terraform modules for multi-region AWS EKS & GCP GKE clusters",
-    ],
-    metrics: [
-      { label: "Failover Time", value: "< 1.2s" },
-      { label: "Image Size", value: "18.2 MB" },
-      { label: "Pods Managed", value: "450+" },
-    ],
-    stack: ["Kubernetes", "Rust", "Docker", "Prometheus", "Terraform", "eBPF"],
-    terminalCmd: "kubectl krew install orbit-canary && orbit canary status",
-  },
-  {
-    id: "photon-canvas",
-    title: "Photon-Canvas",
-    subtitle: "Real-Time Collaborative Spatial 3D Canvas",
-    category: "spatial",
-    badge: "3D / WebAssembly",
-    badgeColor: "text-purple-400 bg-purple-400/10 border-purple-400/20",
-    description:
-      "A collaborative 3D spatial canvas combining Three.js interactive rendering with a WebAssembly compute engine compiled from Rust. Synchronizes real-time entity updates via WebSockets and conflict-free replicated data types (CRDTs).",
-    highlights: [
-      "Physics & collision engine runs in Rust WASM Web Workers at 60 FPS",
-      "Conflict-free replicated data types (Yjs) for multi-user state synchronization",
-      "Zero main-thread jank with OffscreenCanvas rendering",
-    ],
-    metrics: [
-      { label: "Frame Rate", value: "60 FPS" },
-      { label: "WASM Speedup", value: "4.8x" },
-      { label: "Sync Delay", value: "< 18 ms" },
-    ],
-    stack: ["Three.js", "React", "Rust WASM", "WebSockets", "CRDT", "Web Workers"],
-    terminalCmd: "git clone https://github.com/inderjeet/photon-canvas && npm run dev",
-  },
-];
+import { usePortfolioData } from "@/lib/portfolio-data";
+import { ProjectItem } from "@/data/default-portfolio";
 
 export default function ProjectsSection() {
+  const { data } = usePortfolioData();
+  const projects = data.projects;
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [activeBlueprintId, setActiveBlueprintId] = useState<string | null>(null);
+
+  const getBadgeColor = (p: ProjectItem) => {
+    if (p.badgeColor) return p.badgeColor;
+    switch (p.category) {
+      case "rust":
+        return "text-amber-400 bg-amber-400/10 border-amber-400/20";
+      case "nextjs":
+        return "text-emerald-400 bg-emerald-400/10 border-emerald-400/20";
+      case "devops":
+        return "text-sky-400 bg-sky-400/10 border-sky-400/20";
+      case "spatial":
+        return "text-purple-400 bg-purple-400/10 border-purple-400/20";
+      default:
+        return "text-emerald-400 bg-emerald-400/10 border-emerald-400/20";
+    }
+  };
 
   const filteredProjects =
     selectedFilter === "all"
@@ -177,7 +92,7 @@ export default function ProjectsSection() {
               <div>
                 {/* Header row */}
                 <div className="flex items-center justify-between gap-3 mb-4">
-                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${project.badgeColor}`}>
+                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${getBadgeColor(project)}`}>
                     {project.badge}
                   </span>
                   

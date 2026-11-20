@@ -30,3 +30,30 @@ CREATE POLICY "Allow authenticated read-only access"
   FOR SELECT
   TO authenticated
   USING (true);
+
+-- ==============================================================
+-- 5. Dynamic Portfolio Content Storage (Optional Cloud Sync)
+-- ==============================================================
+CREATE TABLE IF NOT EXISTS public.portfolio_settings (
+  id TEXT PRIMARY KEY,
+  data JSONB NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+ALTER TABLE public.portfolio_settings ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow public read portfolio_settings" ON public.portfolio_settings;
+CREATE POLICY "Allow public read portfolio_settings"
+  ON public.portfolio_settings
+  FOR SELECT
+  TO anon, authenticated
+  USING (true);
+
+DROP POLICY IF EXISTS "Allow authenticated manage portfolio_settings" ON public.portfolio_settings;
+CREATE POLICY "Allow authenticated manage portfolio_settings"
+  ON public.portfolio_settings
+  FOR ALL
+  TO anon, authenticated
+  USING (true)
+  WITH CHECK (true);
+

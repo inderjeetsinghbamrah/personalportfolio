@@ -3,9 +3,12 @@
 import React, { useState } from "react";
 import { ArrowDown, ArrowUpRight, Globe, FileText, Layers } from "lucide-react";
 import ResumeModal from "@/components/ui/ResumeModal";
+import { usePortfolioData } from "@/lib/portfolio-data";
 
 export default function HeroSection() {
   const [resumeOpen, setResumeOpen] = useState(false);
+  const { data } = usePortfolioData();
+  const profile = data.profile;
 
   const scrollTo = (id: string) => {
     document.querySelector(id)?.scrollIntoView({ behavior: "smooth" });
@@ -18,30 +21,40 @@ export default function HeroSection() {
     >
       {/* Global Status Badges */}
       <div className="flex flex-wrap items-center gap-2.5 mb-8">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400 font-medium">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span>Available for global full-stack &amp; systems roles</span>
+        <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-medium ${
+          profile.isAvailable 
+            ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" 
+            : "bg-rose-500/10 border-rose-500/20 text-rose-400"
+        }`}>
+          <span className={`w-1.5 h-1.5 rounded-full ${
+            profile.isAvailable ? "bg-emerald-400 animate-pulse" : "bg-rose-400"
+          }`} />
+          <span>{profile.statusBadge}</span>
         </div>
 
-        <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08] text-xs text-slate-300 font-mono">
-          <Globe className="w-3.5 h-3.5 text-sky-400" />
-          <span>UTC+5:30 • 4-5h US overlap • Full EU/UK overlap</span>
-        </div>
+        {profile.timezoneOverlap && (
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08] text-xs text-slate-300 font-mono">
+            <Globe className="w-3.5 h-3.5 text-sky-400" />
+            <span>{profile.timezoneOverlap}</span>
+          </div>
+        )}
 
-        <div className="hidden lg:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.02] border border-white/[0.06] text-xs text-slate-400 font-mono">
-          <Layers className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Distributed Architecture: Next.js Edge ➔ Tokio Reactor ➔ Kubernetes</span>
-        </div>
+        {profile.architectureTag && (
+          <div className="hidden lg:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.02] border border-white/[0.06] text-xs text-slate-400 font-mono">
+            <Layers className="w-3.5 h-3.5 text-emerald-400" />
+            <span>{profile.architectureTag}</span>
+          </div>
+        )}
       </div>
 
       {/* Main Headline */}
       <div className="max-w-3xl space-y-6">
         <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.12]">
-          Engineering scalable web applications and high-performance compiled systems.
+          {profile.headline}
         </h1>
 
         <p className="text-lg sm:text-xl text-slate-300 leading-relaxed font-normal">
-          I&apos;m <span className="text-white font-semibold">Inderjeet</span>. I bridge the gap between reactive frontend user experiences and low-level backend performance—crafting applications in <span className="text-emerald-300">React &amp; Next.js</span>, writing memory-safe concurrency with <span className="text-amber-300">Rust</span>, and orchestrating resilient deployments with <span className="text-sky-300">Docker &amp; Kubernetes</span>.
+          {profile.bio}
         </p>
 
         {/* Action Buttons */}
@@ -92,29 +105,17 @@ export default function HeroSection() {
 
       {/* Clean 3-Pillar Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-20 pt-8 border-t border-white/[0.08]">
-        <div className="p-5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-          <div className="text-xs font-mono text-emerald-400 font-medium mb-1">01 / FRONTEND</div>
-          <div className="text-base font-semibold text-white">React 19 &amp; Next.js</div>
-          <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-            React Server Components, progressive streaming SSR, edge caching, and interactive 3D WebGL interfaces.
-          </p>
-        </div>
-
-        <div className="p-5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-          <div className="text-xs font-mono text-amber-400 font-medium mb-1">02 / SYSTEMS</div>
-          <div className="text-base font-semibold text-white">Rust &amp; Concurrency</div>
-          <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-            Tokio async runtimes, zero-cost abstractions, mathematical memory safety, and WebAssembly compilation.
-          </p>
-        </div>
-
-        <div className="p-5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-          <div className="text-xs font-mono text-sky-400 font-medium mb-1">03 / DEVOPS</div>
-          <div className="text-base font-semibold text-white">Cloud &amp; Deployment</div>
-          <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-            Automated CI/CD pipelines, distroless Docker containers, Kubernetes canary rollouts, and infrastructure as code.
-          </p>
-        </div>
+        {profile.pillars?.map((pillar, idx) => (
+          <div key={idx} className="p-5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+            <div className={`text-xs font-mono font-medium mb-1 ${pillar.color || "text-emerald-400"}`}>
+              {pillar.number}
+            </div>
+            <div className="text-base font-semibold text-white">{pillar.tech}</div>
+            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+              {pillar.description}
+            </p>
+          </div>
+        ))}
       </div>
 
       {/* Resume Modal */}

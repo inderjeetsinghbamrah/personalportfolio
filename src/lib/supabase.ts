@@ -31,6 +31,53 @@ export interface ContactMessage {
   focus: string;
   message: string;
   created_at?: string;
+  read?: boolean;
+}
+
+const LOCAL_MESSAGES_KEY = "portfolio_admin_messages";
+
+export function getLocalMessages(): ContactMessage[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(LOCAL_MESSAGES_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw);
+  } catch {
+    return [];
+  }
+}
+
+export function saveLocalMessage(msg: ContactMessage): void {
+  if (typeof window === "undefined") return;
+  try {
+    const current = getLocalMessages();
+    const updated = [msg, ...current.filter((m) => m.id !== msg.id)];
+    localStorage.setItem(LOCAL_MESSAGES_KEY, JSON.stringify(updated));
+  } catch (err) {
+    console.warn("Failed to save local message:", err);
+  }
+}
+
+export function deleteLocalMessage(id: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    const current = getLocalMessages();
+    const filtered = current.filter((m) => m.id !== id);
+    localStorage.setItem(LOCAL_MESSAGES_KEY, JSON.stringify(filtered));
+  } catch (err) {
+    console.warn("Failed to delete local message:", err);
+  }
+}
+
+export function toggleMessageReadStatus(id: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    const current = getLocalMessages();
+    const updated = current.map((m) => (m.id === id ? { ...m, read: !m.read } : m));
+    localStorage.setItem(LOCAL_MESSAGES_KEY, JSON.stringify(updated));
+  } catch (err) {
+    console.warn("Failed to update message status:", err);
+  }
 }
 
 /**
@@ -87,13 +134,26 @@ export async function saveContactMessage(msg: Omit<ContactMessage, "id" | "creat
   error?: string;
   isTableMissing?: boolean;
 }> {
+  const localMsg: ContactMessage = {
+    id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `msg-${Date.now()}`,
+    name: msg.name,
+    email: msg.email,
+    focus: msg.focus,
+    message: msg.message,
+    created_at: new Date().toISOString(),
+    read: false,
+  };
+
+  // Always store locally as well so admin sees inquiries instantly
+  saveLocalMessage(localMsg);
+
   try {
     const payload = {
       name: msg.name,
       email: msg.email,
       focus: msg.focus,
       message: msg.message,
-      created_at: new Date().toISOString(),
+      created_at: localMsg.created_at,
     };
 
     const { error } = await supabase.from("messages").insert([payload]);

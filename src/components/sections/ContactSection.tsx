@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Send, CheckCircle2, Mail, ArrowUpRight, Database } from "lucide-react";
 import { saveContactMessage, supabaseProjectRef } from "@/lib/supabase";
+import { usePortfolioData } from "@/lib/portfolio-data";
 
 function GitHubIcon({ className }: { className?: string }) {
   return (
@@ -21,6 +22,8 @@ function LinkedInIcon({ className }: { className?: string }) {
 }
 
 export default function ContactSection() {
+  const { data } = usePortfolioData();
+  const profile = data.profile;
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -187,38 +190,38 @@ export default function ContactSection() {
           </h4>
 
           <a
-            href="mailto:inderjeet@systems.dev"
+            href={`mailto:${profile.email}`}
             className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 text-slate-200 hover:text-white transition-all group"
           >
             <div className="flex items-center gap-3">
               <Mail className="w-4 h-4 text-emerald-400" />
-              <span className="text-xs font-mono">inderjeet@systems.dev</span>
+              <span className="text-xs font-mono">{profile.email}</span>
             </div>
             <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors" />
           </a>
 
           <a
-            href="https://github.com"
+            href={profile.githubUrl}
             target="_blank"
             rel="noreferrer"
             className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 text-slate-200 hover:text-white transition-all group"
           >
             <div className="flex items-center gap-3">
               <GitHubIcon className="w-4 h-4 text-slate-300" />
-              <span className="text-xs font-mono">github.com/inderjeet</span>
+              <span className="text-xs font-mono">{profile.githubUrl.replace("https://", "")}</span>
             </div>
             <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors" />
           </a>
 
           <a
-            href="https://linkedin.com"
+            href={profile.linkedinUrl}
             target="_blank"
             rel="noreferrer"
             className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/20 text-slate-200 hover:text-white transition-all group"
           >
             <div className="flex items-center gap-3">
               <LinkedInIcon className="w-4 h-4 text-sky-400" />
-              <span className="text-xs font-mono">linkedin.com/in/inderjeet</span>
+              <span className="text-xs font-mono">{profile.linkedinUrl.replace("https://", "")}</span>
             </div>
             <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors" />
           </a>
@@ -250,7 +253,7 @@ export default function ContactSection() {
       {/* Footer */}
       <footer className="mt-24 pt-8 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
         <div>
-          Inderjeet © 2026 • Built with React, Next.js, Three.js &amp; Rust
+          {profile.name} © 2026 • Built with React, Next.js, Three.js &amp; Rust
         </div>
         <div>
           Engineered for performance &amp; accessibility
