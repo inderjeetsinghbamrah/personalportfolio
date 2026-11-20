@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Send, CheckCircle2, Mail, ArrowUpRight, Database } from "lucide-react";
+import { Send, CheckCircle2, Mail, ArrowUpRight } from "lucide-react";
 import { saveContactMessage } from "@/lib/messages-client";
 import { usePortfolioData } from "@/lib/portfolio-data";
 
@@ -225,26 +225,6 @@ export default function ContactSection() {
             </div>
             <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors" />
           </a>
-
-          {/* Database Infrastructure Status */}
-          <div className="p-3.5 rounded-xl bg-white/[0.02] border border-emerald-500/20 text-slate-300 space-y-1">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Database className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-xs font-mono font-semibold text-white">
-                  Database Infrastructure
-                </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              </div>
-              <span className="text-[10px] font-mono text-emerald-400 font-medium">
-                Live &amp; Synced
-              </span>
-            </div>
-            <div className="text-[11px] text-slate-400 font-mono flex items-center justify-between pt-0.5">
-              <span>Status: Distributed PostgreSQL</span>
-              <span className="text-[10px] text-emerald-400/80 font-mono">TLS 1.3</span>
-            </div>
-          </div>
         </div>
       </div>
 
