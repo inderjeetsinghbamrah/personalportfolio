@@ -43,12 +43,8 @@ import {
   getLocalMessages, 
   deleteLocalMessage, 
   toggleMessageReadStatus, 
-  ContactMessage, 
-  checkSupabaseHealth,
-  supabase,
-  supabaseProjectRef,
-  supabaseProjectName
-} from "@/lib/supabase";
+  ContactMessage 
+} from "@/lib/messages-client";
 import { ProjectItem, PillarItem, PortfolioData } from "@/data/default-portfolio";
 import { sound } from "@/lib/sound";
 
@@ -142,21 +138,26 @@ export default function AdminPage() {
     }
   };
 
-  // Handle Supabase Auth Sign-In
+  // Handle Supabase Auth Sign-In (Verified on Server via /api/admin/auth)
   const handleSupabaseSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSupabaseLoading(true);
     setAuthError("");
     try {
-      const { data: authData, error } = await supabase.auth.signInWithPassword({
-        email: supabaseEmail,
-        password: supabasePassword,
+      const res = await fetch("/api/admin/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: supabaseEmail,
+          password: supabasePassword,
+        }),
       });
 
-      if (error) {
-        setAuthError(error.message);
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setAuthError(data.error || "Authentication failed: Invalid credentials");
         sound.playError();
-      } else if (authData.user) {
+      } else {
         sound.playSuccess();
         setIsAuthenticated(true);
         loadMessages();
@@ -164,6 +165,7 @@ export default function AdminPage() {
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Authentication failed";
       setAuthError(msg);
+      sound.playError();
     } finally {
       setIsSupabaseLoading(false);
     }
@@ -353,13 +355,23 @@ export default function AdminPage() {
   };
 
   const testSupabaseConnection = async () => {
-    const health = await checkSupabaseHealth();
-    setBackendHealth({
-      tested: true,
-      connected: health.connected,
-      version: health.version,
-      error: health.error,
-    });
+    try {
+      const res = await fetch("/api/admin/health", { credentials: "include" });
+      const health = await res.json();
+      setBackendHealth({
+        tested: true,
+        connected: Boolean(health.connected),
+        version: health.version,
+        error: health.error,
+      });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Diagnostics query failed";
+      setBackendHealth({
+        tested: true,
+        connected: false,
+        error: msg,
+      });
+    }
   };
 
   // =========================================================================
@@ -447,8 +459,8 @@ export default function AdminPage() {
                     <label className="text-xs font-mono text-slate-300 uppercase tracking-wider">
                       Security Passcode
                     </label>
-                    <span className="text-[10px] font-mono text-emerald-400">
-                      Default: systems2026
+                    <span className="text-[10px] font-mono text-slate-400">
+                      Encrypted Auth
                     </span>
                   </div>
                   <div className="relative">
@@ -1536,10 +1548,10 @@ export default function AdminPage() {
                 <div>
                   <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
                     <Database className="w-4 h-4 text-emerald-400" />
-                    <span>Supabase Cloud Diagnostics</span>
+                    <span>Database Diagnostics</span>
                   </h2>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    Project: <span className="font-mono text-slate-300">{supabaseProjectName}</span> ({supabaseProjectRef})
+                    Cloud Database: <span className="font-mono text-emerald-400">Connected &amp; Secure</span>
                   </p>
                 </div>
 

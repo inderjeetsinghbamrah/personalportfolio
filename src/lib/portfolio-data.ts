@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import { PortfolioData, defaultPortfolioData } from "@/data/default-portfolio";
 
 const STORAGE_KEY = "portfolio_site_data";
-export const DEFAULT_ADMIN_PASSCODE = "systems2026";
 
 /**
  * Retrieves the current portfolio data from localStorage or fallback defaults.

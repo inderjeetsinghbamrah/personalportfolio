@@ -1,12 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAdminSession } from "@/lib/auth-security";
-import { createClient } from "@supabase/supabase-js";
-
-function getServerSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://ovmvzfakvxoshjnwsfcy.supabase.co";
-  const key = process.env.SUPABASE_SECRET_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "";
-  return createClient(url, key, { auth: { persistSession: false } });
-}
+import { getSupabaseServerClient } from "@/lib/supabase";
 
 export async function GET() {
   const isAuth = await verifyAdminSession();
@@ -15,7 +9,7 @@ export async function GET() {
   }
 
   try {
-    const supabase = getServerSupabase();
+    const supabase = getSupabaseServerClient();
     const { data, error } = await supabase
       .from("messages")
       .select("*")
@@ -44,7 +38,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: "Message id is required" }, { status: 400 });
     }
 
-    const supabase = getServerSupabase();
+    const supabase = getSupabaseServerClient();
     const { error } = await supabase.from("messages").delete().eq("id", id);
 
     if (error) {

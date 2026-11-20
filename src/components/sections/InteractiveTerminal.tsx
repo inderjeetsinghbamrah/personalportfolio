@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { Terminal, RotateCcw } from "lucide-react";
-import { supabaseProjectRef, supabaseUrl } from "@/lib/supabase";
 import { getPortfolioData } from "@/lib/portfolio-data";
 
 interface TerminalLine {
@@ -190,14 +189,13 @@ DevOps:     Docker Distroless, Kubernetes (K8s), Helm, Terraform, GitHub Actions
       case "db":
         newLines.push({
           type: "output",
-          text: `[SUPABASE CLOUD DATABASE]
-  • Project Name:  personalPortfolio
-  • Project Ref:   ${supabaseProjectRef || "configured"}
-  • Endpoint:      ${supabaseUrl || "configured"}
-  • Auth Engine:   GoTrue v2.198.0 (Active)
-  • Storage:       PostgreSQL with Row Level Security (RLS)
-  • Client Lib:    @supabase/supabase-js
-  • Status:        ONLINE & CONNECTED (HTTP/2)`,
+          text: `[DATABASE INFRASTRUCTURE]
+  • Engine:        PostgreSQL with Row Level Security (RLS)
+  • Architecture:  Multi-Region Distributed State
+  • Caching:       Redis In-Memory Tier (< 5ms read latency)
+  • Auth Guard:    PBKDF2-SHA512 + Strict HttpOnly Session Cookies
+  • Security:      Modern Publishable Key & Server Secret Isolation
+  • Status:        ONLINE & SECURED (TLS 1.3)`,
         });
         break;
 

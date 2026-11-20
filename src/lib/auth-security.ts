@@ -1,18 +1,13 @@
 import crypto from "crypto";
 import { cookies } from "next/headers";
 import { cacheRateLimit, cacheGet, cacheSet, cacheDelete } from "./redis";
-import { createClient } from "@supabase/supabase-js";
+import { getSupabaseServerClient } from "./supabase";
 
 const COOKIE_NAME = "portfolio_admin_auth_session";
 const SESSION_TTL_SECONDS = 7 * 24 * 60 * 60; // 7 days
 
-// Server-side Supabase client using secret key for privileged auth tables
 function getServerSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://ovmvzfakvxoshjnwsfcy.supabase.co";
-  const secret = process.env.SUPABASE_SECRET_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "";
-  return createClient(url, secret, {
-    auth: { persistSession: false },
-  });
+  return getSupabaseServerClient();
 }
 
 /**
@@ -70,9 +65,10 @@ export async function getAdminCredentials(): Promise<{ hash: string; salt: strin
     return creds;
   }
 
-  // Fallback to default hash of 'systems2026'
+  // Fallback to hash derived strictly from environment variable ADMIN_DEFAULT_PASSCODE
+  const envPasscode = process.env.ADMIN_DEFAULT_PASSCODE || process.env.ADMIN_PASSCODE || "";
   const defaultSalt = "f8a931c890de2b47e8105c3bfa179428";
-  const defaultHash = hashPassword("systems2026", defaultSalt).hash;
+  const defaultHash = envPasscode ? hashPassword(envPasscode, defaultSalt).hash : "";
 
   return { hash: defaultHash, salt: defaultSalt, isDefault: true };
 }

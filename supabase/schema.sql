@@ -1,6 +1,6 @@
 -- ==============================================================
 -- PRODUCTION SUPABASE SCHEMA FOR PERSONAL PORTFOLIO
--- Project: personalPortfolio (ovmvzfakvxoshjnwsfcy)
+-- Cloud Database Architecture & Row Level Security Setup
 -- ==============================================================
 
 -- 1. Contact Form Messages Table

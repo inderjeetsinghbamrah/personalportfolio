@@ -2,13 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cacheGet, cacheSet, getCacheTelemetry } from "@/lib/redis";
 import { verifyAdminSession } from "@/lib/auth-security";
 import { defaultPortfolioData, PortfolioData, ProjectItem } from "@/data/default-portfolio";
-import { createClient } from "@supabase/supabase-js";
-
-function getServerSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://ovmvzfakvxoshjnwsfcy.supabase.co";
-  const key = process.env.SUPABASE_SECRET_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "";
-  return createClient(url, key, { auth: { persistSession: false } });
-}
+import { getSupabaseServerClient } from "@/lib/supabase";
 
 export async function GET() {
   try {
@@ -22,7 +16,7 @@ export async function GET() {
     }
 
     // 2. Fetch from Supabase Postgres tables
-    const supabase = getServerSupabase();
+    const supabase = getSupabaseServerClient();
     const [profileRes, projectsRes, resumeRes] = await Promise.all([
       supabase.from("portfolio_profile").select("*").eq("id", "main").single(),
       supabase.from("portfolio_projects").select("*").order("sort_order", { ascending: true }),
@@ -97,7 +91,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid payload format" }, { status: 400 });
     }
 
-    const supabase = getServerSupabase();
+    const supabase = getSupabaseServerClient();
 
     // 1. Update Profile in Supabase
     await supabase.from("portfolio_profile").upsert([

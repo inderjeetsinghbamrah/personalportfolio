@@ -7,6 +7,7 @@ import {
   revokeAdminSession,
   checkLoginRateLimit 
 } from "@/lib/auth-security";
+import { getSupabaseServerClient } from "@/lib/supabase";
 
 export async function GET() {
   const isValid = await verifyAdminSession();
@@ -29,7 +30,33 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { passcode } = await req.json();
+    const body = await req.json();
+    const { passcode, email, password } = body;
+
+    // Mode 1: Supabase Email/Password authentication verified on server
+    if (email && password) {
+      const supabase = getSupabaseServerClient();
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
+        email: String(email),
+        password: String(password),
+      });
+
+      if (error || !authData.user) {
+        return NextResponse.json(
+          { 
+            error: error?.message || "Invalid Supabase admin credentials",
+            remainingAttempts: rateCheck.remaining 
+          },
+          { status: 401 }
+        );
+      }
+
+      const userAgent = req.headers.get("user-agent") || undefined;
+      await createAdminSession(ip, userAgent);
+      return NextResponse.json({ success: true, email: authData.user.email });
+    }
+
+    // Mode 2: Master Passcode Entry
     if (!passcode) {
       return NextResponse.json({ error: "Passcode is required" }, { status: 400 });
     }
