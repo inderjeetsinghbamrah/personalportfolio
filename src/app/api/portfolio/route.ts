@@ -54,6 +54,8 @@ export async function GET() {
               metrics: p.metrics || [],
               stack: p.stack || [],
               terminalCmd: p.terminal_cmd,
+              githubUrl: p.github_url || "",
+              liveDemoUrl: p.live_demo_url || "",
             }))
           : defaultPortfolioData.projects,
       resume: resumeRes.data
@@ -136,6 +138,8 @@ export async function POST(req: NextRequest) {
       metrics: p.metrics,
       stack: p.stack,
       terminal_cmd: p.terminalCmd,
+      github_url: p.githubUrl || null,
+      live_demo_url: p.liveDemoUrl || null,
       sort_order: idx,
       updated_at: new Date().toISOString(),
     }));

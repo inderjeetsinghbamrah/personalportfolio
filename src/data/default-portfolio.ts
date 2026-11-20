@@ -15,6 +15,8 @@ export interface ProjectItem {
   metrics: ProjectMetric[];
   stack: string[];
   terminalCmd: string;
+  githubUrl?: string;
+  liveDemoUrl?: string;
 }
 
 export interface PillarItem {
@@ -120,6 +122,8 @@ export const defaultPortfolioData: PortfolioData = {
       ],
       stack: ["Rust", "Tokio", "gRPC", "io_uring", "Raft", "Docker"],
       terminalCmd: "cargo install aether-kv && aether-kv --cluster-size 5",
+      githubUrl: "https://github.com/inderjeetsinghbamrah/personalportfolio",
+      liveDemoUrl: "",
     },
     {
       id: "hyperion-next",
@@ -142,6 +146,8 @@ export const defaultPortfolioData: PortfolioData = {
       ],
       stack: ["Next.js 14", "React 19", "TypeScript", "Tailwind CSS", "Zustand", "Cloudflare"],
       terminalCmd: "npx create-hyperion-client@latest --template enterprise",
+      githubUrl: "https://github.com/inderjeetsinghbamrah/personalportfolio",
+      liveDemoUrl: "",
     },
     {
       id: "orbit-kube",
@@ -164,6 +170,8 @@ export const defaultPortfolioData: PortfolioData = {
       ],
       stack: ["Kubernetes", "Rust", "Docker", "Prometheus", "Terraform", "eBPF"],
       terminalCmd: "kubectl krew install orbit-canary && orbit canary status",
+      githubUrl: "https://github.com/inderjeetsinghbamrah/personalportfolio",
+      liveDemoUrl: "",
     },
     {
       id: "photon-canvas",
@@ -186,6 +194,8 @@ export const defaultPortfolioData: PortfolioData = {
       ],
       stack: ["Three.js", "React", "Rust WASM", "WebSockets", "CRDT", "Web Workers"],
       terminalCmd: "git clone https://github.com/inderjeet/photon-canvas && npm run dev",
+      githubUrl: "https://github.com/inderjeetsinghbamrah/personalportfolio",
+      liveDemoUrl: "",
     },
   ],
   resume: {

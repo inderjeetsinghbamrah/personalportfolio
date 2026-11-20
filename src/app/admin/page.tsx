@@ -915,6 +915,8 @@ export default function AdminPage() {
                     ],
                     stack: ["Rust", "Tokio", "Docker"],
                     terminalCmd: "cargo test --release",
+                    githubUrl: "",
+                    liveDemoUrl: "",
                   });
                   setIsCreatingProject(true);
                 }}
@@ -1163,6 +1165,35 @@ export default function AdminPage() {
                       onChange={(e) => setEditingProject({ ...editingProject, terminalCmd: e.target.value })}
                       className="w-full px-3 py-2 rounded-lg bg-black/50 border border-white/[0.08] text-emerald-400 text-xs focus:border-emerald-500 focus:outline-none font-mono"
                     />
+                  </div>
+
+                  {/* GitHub Repository URL & Live Deployed URL */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[11px] text-slate-400 font-mono mb-1">
+                        GitHub Repository URL
+                      </label>
+                      <input
+                        type="url"
+                        placeholder="https://github.com/username/project"
+                        value={editingProject.githubUrl || ""}
+                        onChange={(e) => setEditingProject({ ...editingProject, githubUrl: e.target.value })}
+                        className="w-full px-3 py-2 rounded-lg bg-black/50 border border-white/[0.08] text-white text-xs focus:border-emerald-500 focus:outline-none font-mono"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] text-slate-400 font-mono mb-1">
+                        Live Deployed Web App URL (Optional)
+                      </label>
+                      <input
+                        type="url"
+                        placeholder="https://project.vercel.app"
+                        value={editingProject.liveDemoUrl || ""}
+                        onChange={(e) => setEditingProject({ ...editingProject, liveDemoUrl: e.target.value })}
+                        className="w-full px-3 py-2 rounded-lg bg-black/50 border border-white/[0.08] text-white text-xs focus:border-emerald-500 focus:outline-none font-mono"
+                      />
+                    </div>
                   </div>
 
                   {/* Modal Footer Actions */}

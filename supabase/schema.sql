@@ -69,6 +69,8 @@ CREATE TABLE IF NOT EXISTS public.portfolio_projects (
   metrics JSONB NOT NULL DEFAULT '[]'::jsonb,
   stack JSONB NOT NULL DEFAULT '[]'::jsonb,
   terminal_cmd TEXT NOT NULL,
+  github_url TEXT,
+  live_demo_url TEXT,
   sort_order INTEGER NOT NULL DEFAULT 0,
   updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
