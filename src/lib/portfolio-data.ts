@@ -2,11 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { PortfolioData, defaultPortfolioData } from "@/data/default-portfolio";
-import { supabase } from "./supabase";
 
 const STORAGE_KEY = "portfolio_site_data";
-const PASSCODE_STORAGE_KEY = "portfolio_admin_passcode";
-const AUTH_SESSION_KEY = "portfolio_admin_auth";
 export const DEFAULT_ADMIN_PASSCODE = "systems2026";
 
 /**
@@ -27,29 +24,33 @@ export function getPortfolioData(): PortfolioData {
       resume: { ...defaultPortfolioData.resume, ...parsed.resume },
     };
   } catch (err) {
-    console.warn("Failed to load custom portfolio data, using defaults:", err);
+    console.warn("Failed to load cached portfolio data, using defaults:", err);
     return defaultPortfolioData;
   }
 }
 
 /**
- * Saves updated portfolio data to localStorage and dispatches a change event.
- * Also attempts to persist to Supabase or API if possible.
+ * Saves updated portfolio data to Redis & Supabase via API, updates localStorage, and notifies components.
  */
 export async function savePortfolioData(data: PortfolioData): Promise<{ success: boolean; error?: string }> {
   if (typeof window === "undefined") return { success: false, error: "SSR environment" };
 
   try {
+    // 1. Save to localStorage immediately for instant local update
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     window.dispatchEvent(new CustomEvent("portfolio-data-updated", { detail: data }));
 
-    // Try synchronizing with Supabase portfolio_settings if table exists
-    try {
-      await supabase
-        .from("portfolio_settings")
-        .upsert([{ id: "site_config", data, updated_at: new Date().toISOString() }]);
-    } catch {
-      // Ignored if table not created in Supabase yet
+    // 2. Persist to Supabase and warm Redis via secure authenticated API
+    const res = await fetch("/api/portfolio", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+      credentials: "include",
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      return { success: false, error: errData.error || `HTTP ${res.status}` };
     }
 
     return { success: true };
@@ -71,75 +72,156 @@ export function resetPortfolioData(): PortfolioData {
 }
 
 /**
- * Manages the Admin Passcode
+ * Enterprise-grade Hardened Admin Authentication Client
  */
-export function getAdminPasscode(): string {
-  if (typeof window === "undefined") return DEFAULT_ADMIN_PASSCODE;
-  return localStorage.getItem(PASSCODE_STORAGE_KEY) || DEFAULT_ADMIN_PASSCODE;
+export async function adminLogin(passcode: string): Promise<{ success: boolean; error?: string; remainingAttempts?: number }> {
+  try {
+    const res = await fetch("/api/admin/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ passcode }),
+      credentials: "include",
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (res.ok) {
+      sessionStorage.setItem("portfolio_admin_auth", "true");
+      return { success: true };
+    }
+
+    return {
+      success: false,
+      error: data.error || "Authentication rejected",
+      remainingAttempts: data.remainingAttempts,
+    };
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : "Network error during authentication";
+    return { success: false, error: msg };
+  }
 }
 
-export function setAdminPasscode(newCode: string): boolean {
-  if (typeof window === "undefined") return false;
-  if (!newCode || newCode.length < 4) return false;
-  localStorage.setItem(PASSCODE_STORAGE_KEY, newCode);
-  return true;
+export async function adminCheckSession(): Promise<boolean> {
+  try {
+    const res = await fetch("/api/admin/auth", {
+      method: "GET",
+      credentials: "include",
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.authenticated) {
+        sessionStorage.setItem("portfolio_admin_auth", "true");
+        return true;
+      }
+    }
+    sessionStorage.removeItem("portfolio_admin_auth");
+    return false;
+  } catch {
+    return sessionStorage.getItem("portfolio_admin_auth") === "true";
+  }
 }
 
-export function verifyAdminPasscode(attempt: string): boolean {
-  const current = getAdminPasscode();
-  return attempt.trim() === current.trim();
+export async function adminLogout(): Promise<void> {
+  try {
+    await fetch("/api/admin/auth", {
+      method: "DELETE",
+      credentials: "include",
+    });
+  } catch {
+    // Ignore network error on logout
+  }
+  sessionStorage.removeItem("portfolio_admin_auth");
+}
+
+export async function adminChangePasscode(currentPasscode: string, newPasscode: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const res = await fetch("/api/admin/passcode", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ currentPasscode, newPasscode }),
+      credentials: "include",
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (res.ok) {
+      return { success: true };
+    }
+    return { success: false, error: data.error || "Failed to update passcode" };
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : "Network failure";
+    return { success: false, error: msg };
+  }
 }
 
 /**
- * Session Authentication State (persisted per browser session)
+ * Legacy compatibility helpers
  */
 export function isSessionAuthenticated(): boolean {
   if (typeof window === "undefined") return false;
-  return sessionStorage.getItem(AUTH_SESSION_KEY) === "true";
+  return sessionStorage.getItem("portfolio_admin_auth") === "true";
 }
 
 export function setSessionAuthenticated(auth: boolean): void {
   if (typeof window === "undefined") return;
   if (auth) {
-    sessionStorage.setItem(AUTH_SESSION_KEY, "true");
+    sessionStorage.setItem("portfolio_admin_auth", "true");
   } else {
-    sessionStorage.removeItem(AUTH_SESSION_KEY);
+    sessionStorage.removeItem("portfolio_admin_auth");
   }
 }
 
 /**
- * React hook to access live-updated portfolio data across any component.
+ * React hook to access live-updated portfolio data across any component,
+ * backed by Redis and Supabase.
  */
 export function usePortfolioData() {
   const [data, setData] = useState<PortfolioData>(defaultPortfolioData);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [cacheSource, setCacheSource] = useState<string>("local");
 
-  const loadData = useCallback(() => {
+  const loadLocal = useCallback(() => {
     const current = getPortfolioData();
     setData(current);
-    setIsLoaded(true);
+  }, []);
+
+  const fetchRemote = useCallback(async () => {
+    try {
+      const res = await fetch("/api/portfolio", { cache: "no-store" });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.data) {
+          setData(json.data);
+          setCacheSource(json.source || "remote");
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(json.data));
+        }
+      }
+    } catch (err) {
+      console.warn("[PortfolioData] Failed to fetch remote portfolio data:", err);
+    } finally {
+      setIsLoaded(true);
+    }
   }, []);
 
   useEffect(() => {
-    loadData();
+    loadLocal();
+    fetchRemote();
 
     const handleUpdate = (e: Event) => {
       const customEvent = e as CustomEvent<PortfolioData>;
       if (customEvent.detail) {
         setData(customEvent.detail);
       } else {
-        loadData();
+        loadLocal();
       }
     };
 
     window.addEventListener("portfolio-data-updated", handleUpdate);
-    window.addEventListener("storage", loadData);
+    window.addEventListener("storage", loadLocal);
 
     return () => {
       window.removeEventListener("portfolio-data-updated", handleUpdate);
-      window.removeEventListener("storage", loadData);
+      window.removeEventListener("storage", loadLocal);
     };
-  }, [loadData]);
+  }, [loadLocal, fetchRemote]);
 
   const update = async (newData: PortfolioData) => {
     const res = await savePortfolioData(newData);
@@ -157,7 +239,9 @@ export function usePortfolioData() {
   return {
     data,
     isLoaded,
+    cacheSource,
     updateData: update,
     resetData: reset,
+    refreshRemote: fetchRemote,
   };
 }

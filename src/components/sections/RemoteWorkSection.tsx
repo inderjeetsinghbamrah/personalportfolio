@@ -11,8 +11,11 @@ import {
   Moon, 
   Sliders 
 } from "lucide-react";
+import { usePortfolioData } from "@/lib/portfolio-data";
 
 export default function RemoteWorkSection() {
+  const { data } = usePortfolioData();
+  const profile = data.profile;
   const [clientPing, setClientPing] = useState<number | null>(null);
   const [nearestPoP, setNearestPoP] = useState<string>("Detecting Edge...");
   const [utcHour, setUtcHour] = useState<number>(14); // Default to 14:00 UTC (19:30 IST / 10:00 AM EST)
@@ -207,10 +210,10 @@ export default function RemoteWorkSection() {
             <span className="text-[10px] text-slate-400 font-mono">CET (UTC+1)</span>
           </div>
 
-          {/* Inderjeet */}
+          {/* Profile Name */}
           <div className="p-3 rounded-xl border border-emerald-500/40 bg-emerald-500/10 text-white col-span-2 sm:col-span-1 shadow-lg shadow-emerald-500/5">
             <div className="flex items-center justify-between text-[11px] mb-1 text-emerald-300 font-semibold">
-              <span>Inderjeet</span>
+              <span>{profile.name}</span>
               {inderjeet.isDaytime ? <Sun className="w-3 h-3 text-amber-300" /> : <Moon className="w-3 h-3 text-emerald-300" />}
             </div>
             <div className="text-sm font-mono font-bold text-white">{inderjeet.formatted}</div>
