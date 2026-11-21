@@ -1,0 +1,21 @@
+services:
+  portfolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: isb-portfolio-prod
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY}
+      - SUPABASE_SECRET_KEY=${SUPABASE_SECRET_KEY}
+      - ADMIN_PASSCODE=${ADMIN_PASSCODE}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/profile"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

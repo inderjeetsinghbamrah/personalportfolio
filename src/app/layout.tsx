@@ -7,6 +7,7 @@ const geistSans = localFont({
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -17,27 +18,41 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: "#060709",
+  themeColor: "#08090C",
 };
 
 export const metadata: Metadata = {
-  title: "Inderjeet // Systems & Full-Stack Architect",
+  title: "Inderjeet Singh Bamrah — Full-Stack Developer & Software Architect",
   description:
-    "Interactive 3D portfolio of Inderjeet: Systems & Full-Stack Software Developer specializing in React 19, Next.js App Router, Rust compiled runtimes, and Cloud-Native Kubernetes DevOps orchestration.",
+    "Personal engineering laboratory & portfolio of Inderjeet Singh Bamrah: Full-Stack Developer, Software Architect, UI/UX Designer, and Lecturer in Information Technology. M.Tech CS/IT, B.Tech IT.",
   keywords: [
-    "Inderjeet",
-    "Systems Engineer",
-    "Full Stack Developer",
-    "React",
+    "Inderjeet Singh Bamrah",
+    "Software Architect",
+    "Full-Stack Developer",
+    "UI/UX Designer",
+    "Product Engineer",
     "Next.js",
-    "Rust",
-    "Kubernetes",
+    "React",
+    "TypeScript",
+    "PostgreSQL",
+    "Supabase",
     "Docker",
-    "Three.js",
-    "WebGL",
-    "DevOps",
+    "Kubernetes",
+    "Redis",
+    "Outcome-Based Education",
+    "EDUOBAL",
   ],
-  authors: [{ name: "Inderjeet" }],
+  authors: [{ name: "Inderjeet Singh Bamrah", url: "https://github.com/inderjeetsingh" }],
+  openGraph: {
+    title: "Inderjeet Singh Bamrah — Full-Stack Developer & Software Architect",
+    description: "I design thoughtful digital experiences and engineer scalable software systems.",
+    type: "website",
+    locale: "en_US",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -45,10 +60,50 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: "Inderjeet Singh Bamrah",
+    jobTitle: "Full-Stack Developer & Software Architect",
+    alumniOf: [
+      {
+        "@type": "EducationalOrganization",
+        name: "Master of Technology (M.Tech) in Computer Science & IT",
+      },
+      {
+        "@type": "EducationalOrganization",
+        name: "Bachelor of Technology (B.Tech) in Information Technology",
+      },
+    ],
+    knowsAbout: [
+      "Software Architecture",
+      "Full-Stack Web Development",
+      "Next.js",
+      "React",
+      "TypeScript",
+      "PostgreSQL",
+      "Supabase",
+      "Redis",
+      "Docker",
+      "Kubernetes",
+      "Outcome-Based Education",
+    ],
+    sameAs: [
+      "https://github.com/inderjeetsingh",
+      "https://linkedin.com/in/inderjeetsinghbamrah",
+    ],
+  };
+
   return (
     <html lang="en" className="dark scroll-smooth">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#060709] text-white selection:bg-[#00ffaa] selection:text-black`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#08090C] text-slate-100 selection:bg-indigo-500/30 selection:text-white`}
       >
         {children}
       </body>
