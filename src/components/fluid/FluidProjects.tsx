@@ -1,302 +1,372 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useRef, useState, useEffect } from "react";
+import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 import {
   ExternalLink,
-  Code2,
-  Layers,
+  Play,
   CheckCircle2,
-  Play
+  X,
+  Layers,
+  Sparkles,
+  ArrowDown
 } from "lucide-react";
+import { GithubIcon } from "@/components/ui/Icons";
 import { sound } from "@/lib/sound";
 import { PORTFOLIO_CONTENT, ProjectData } from "@/data/portfolio-content";
 import EduobalInteractiveDemo from "@/components/projects/EduobalInteractiveDemo";
 import SysflowInteractiveDemo from "@/components/projects/SysflowInteractiveDemo";
-import ProjectCaseStudyModal from "@/components/projects/ProjectCaseStudyModal";
-import { Project } from "@/types/portfolio";
 
-export default function FluidProjects() {
-  const { projects } = PORTFOLIO_CONTENT;
-  const [activeCategory, setActiveCategory] = useState<string>("All");
-  const [activeSandboxId, setActiveSandboxId] = useState<string | null>("eduobal");
-  const [selectedCaseStudy, setSelectedCaseStudy] = useState<Project | null>(null);
+interface PinnedProjectCardProps {
+  project: ProjectData;
+  index: number;
+  total: number;
+  scrollYProgress: MotionValue<number>;
+  onOpenDemo: (id: string) => void;
+}
 
-  const categories = ["All", "SaaS Applications", "Developer Tools", "Design Systems", "Cloud Infrastructure"];
+function PinnedProjectCard({
+  project,
+  index,
+  total,
+  scrollYProgress,
+  onOpenDemo,
+}: PinnedProjectCardProps) {
+  const hasDemo = project.interactiveDemoType && project.interactiveDemoType !== "none";
 
-  const filteredProjects = projects.filter(
-    (p) => activeCategory === "All" || p.category === activeCategory
+  // Compute entry and exit scroll thresholds
+  // 4 cards: thresholds around [0, 0.25, 0.50, 0.75, 1.0]
+  const enterStart = index === 0 ? 0 : (index - 1) * 0.25 + 0.18;
+  const enterEnd = index === 0 ? 0 : index * 0.25 + 0.05;
+
+  const exitStart = index * 0.25 + 0.18;
+  const exitEnd = (index + 1) * 0.25 + 0.05;
+
+  // Y transform: Card 0 starts at 0. Subsequent cards start at 100vh and slide up to 0.
+  const y = useTransform(
+    scrollYProgress,
+    index === 0
+      ? [0, 1]
+      : [enterStart - 0.02, enterStart, enterEnd],
+    index === 0 ? ["0vh", "0vh"] : ["110vh", "110vh", "0vh"]
   );
 
-  const handleOpenSandbox = (id: string) => {
+  // Scale down when next card arrives over it
+  const scale = useTransform(
+    scrollYProgress,
+    index === total - 1
+      ? [0, 1]
+      : [exitStart, exitEnd],
+    index === total - 1 ? [1, 1] : [1, 0.94]
+  );
+
+  // Opacity fades slightly when pushed to the background
+  const opacity = useTransform(
+    scrollYProgress,
+    index === total - 1
+      ? [0, 1]
+      : [exitStart, exitEnd],
+    index === total - 1 ? [1, 1] : [1, 0.35]
+  );
+
+  return (
+    <motion.div
+      style={{
+        y,
+        scale,
+        opacity,
+        zIndex: index + 10,
+      }}
+      className="absolute inset-0 m-auto w-full max-w-5xl max-h-[82vh] overflow-y-auto rounded-3xl p-6 sm:p-9 lg:p-11 border border-white/[0.12] bg-ocean-abyss/90 backdrop-blur-2xl shadow-2xl transition-shadow duration-500 hover:border-cyan-400/40"
+    >
+      {/* Background Ambient Radial Flare */}
+      <div
+        className={`absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br ${project.gradient} rounded-full blur-[140px] pointer-events-none opacity-40`}
+      />
+
+      <div className="relative z-10 flex flex-col justify-between h-full space-y-6">
+        {/* Header Row */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/[0.08]">
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-sm font-bold text-cyan-400">
+              0{index + 1} / 0{total}
+            </span>
+            <span className="px-3 py-1 rounded-full text-xs font-mono font-semibold bg-cyan-950/70 text-cyan-300 border border-cyan-500/30">
+              {project.category}
+            </span>
+            {hasDemo && (
+              <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono text-emerald-400 bg-emerald-950/50 border border-emerald-500/30">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                INTERACTIVE SANDBOX
+              </span>
+            )}
+          </div>
+
+          {/* Action CTAs */}
+          <div className="flex flex-wrap items-center gap-3">
+            {hasDemo && (
+              <button
+                onClick={() => onOpenDemo(project.id)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-mono bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-medium shadow-md shadow-cyan-500/20 transition-all hover:scale-[1.02]"
+              >
+                <Play className="w-3.5 h-3.5 fill-current" />
+                <span>Launch Interactive Demo</span>
+              </button>
+            )}
+
+            <a
+              href={project.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => sound.playTick()}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium border border-white/[0.12] hover:border-cyan-400/40 text-slate-300 hover:text-white transition-colors bg-white/[0.03]"
+            >
+              <GithubIcon className="w-3.5 h-3.5" />
+              <span>Source Code</span>
+            </a>
+
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => sound.playTick()}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium bg-white text-slate-900 hover:bg-cyan-200 transition-colors font-semibold"
+              >
+                <span>Live Site</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            )}
+          </div>
+        </div>
+
+        {/* Content Body */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column */}
+          <div className="lg:col-span-8 space-y-4">
+            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+              {project.title}
+            </h3>
+
+            <p className="text-sm sm:text-base text-cyan-300 font-medium">
+              {project.tagline}
+            </p>
+
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-light">
+              {project.description}
+            </p>
+
+            {/* Problem & Solution Invariants */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3">
+              <div className="p-4 rounded-xl border border-white/[0.08] bg-black/30">
+                <div className="text-[11px] font-mono text-amber-400 uppercase tracking-wider mb-1">
+                  The Problem
+                </div>
+                <p className="text-xs text-slate-300 font-light leading-relaxed">
+                  {project.problem}
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl border border-white/[0.08] bg-black/30">
+                <div className="text-[11px] font-mono text-cyan-400 uppercase tracking-wider mb-1">
+                  Architectural Solution
+                </div>
+                <p className="text-xs text-slate-300 font-light leading-relaxed">
+                  {project.solution}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Invariants & Technologies */}
+          <div className="lg:col-span-4 flex flex-col gap-5 pt-1">
+            <div>
+              <div className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-2.5">
+                Core Architectural Invariants
+              </div>
+              <ul className="space-y-2 text-xs text-slate-300 font-light">
+                {project.keyFeatures.slice(0, 3).map((feat, fIdx) => (
+                  <li key={fIdx} className="flex items-start gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
+                    <span>{feat}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <div className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-2.5">
+                Technologies & Protocols
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {project.technologies.map((tech) => (
+                  <span
+                    key={tech}
+                    className="text-[11px] font-mono px-2.5 py-1 rounded-md border border-white/[0.08] bg-white/[0.04] text-slate-300"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+export default function FluidProjects() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { projects } = PORTFOLIO_CONTENT;
+  const [activeDemoId, setActiveDemoId] = useState<string | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
+  // Track active project index based on scroll progress
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.on("change", (latest) => {
+      if (latest < 0.25) setActiveIndex(0);
+      else if (latest < 0.50) setActiveIndex(1);
+      else if (latest < 0.75) setActiveIndex(2);
+      else setActiveIndex(3);
+    });
+    return () => unsubscribe();
+  }, [scrollYProgress]);
+
+  const handleOpenDemo = (id: string) => {
     sound.playTick();
-    setActiveSandboxId((prev) => (prev === id ? null : id));
+    setActiveDemoId(id);
   };
 
-  const handleOpenCaseStudy = (proj: ProjectData) => {
+  const handleCloseDemo = () => {
     sound.playTick();
-    // Convert to Project shape for modal
-    const p: Project = {
-      id: proj.id,
-      title: proj.title,
-      slug: proj.slug,
-      tagline: proj.tagline,
-      overview: proj.description,
-      problem_statement: proj.problem,
-      solution: proj.solution,
-      architecture_diagram: {
-        Client: "Next.js 14 App Router / React Server Components",
-        Gateway: "Edge Route Handlers & Zod contract validation",
-        Database: "PostgreSQL 17 with Row Level Security (RLS)",
-        Cache: "Redis sub-2ms in-memory cache-aside cluster",
-      },
-      database_design: {
-        tables: ["tenants", "courses", "assessments", "students", "attainment_matrices"],
-        tokens: ["color-brand-cyan", "spacing-fluid-lg", "elevation-caustic-3"],
-      },
-      technologies: proj.technologies,
-      engineering_challenges: [
-        {
-          title: "Real-Time Matrix Calculation",
-          description: "High-throughput linear algebraic transformations across thousands of student course marks.",
-        },
-        {
-          title: "Multi-Tenant Isolation",
-          description: "Enforcing Row Level Security (RLS) policies at the PostgreSQL kernel level.",
-        },
-        {
-          title: "Cache Invalidation",
-          description: "Sub-10ms cache invalidation and distributed session locks using Redis.",
-        },
-      ],
-      key_decisions: [
-        {
-          decision: "PostgreSQL 17 Relational Engine",
-          reason: "Strict ACID transactional invariants for academic outcome records.",
-        },
-        {
-          decision: "React Server Components",
-          reason: "Zero-bundle client runtime with sub-second streaming SSR delivery.",
-        },
-      ],
-      github_url: proj.githubUrl,
-      live_demo_url: proj.liveUrl || "",
-      is_featured: true,
-      is_published: true,
-      category_name: proj.category,
-      sort_order: 1,
-    };
-    setSelectedCaseStudy(p);
+    setActiveDemoId(null);
+  };
+
+  const scrollToStep = (index: number) => {
+    sound.playTick();
+    if (!containerRef.current) return;
+    const top = containerRef.current.offsetTop;
+    const height = containerRef.current.offsetHeight - window.innerHeight;
+    const targetScroll = top + (index / (projects.length - 1)) * height;
+    window.scrollTo({ top: targetScroll, behavior: "smooth" });
   };
 
   return (
-    <section id="projects" className="relative py-28 lg:py-36 overflow-hidden bg-ocean-deep">
-      {/* Ambient Moving Atmosphere */}
-      <div className="absolute top-1/4 left-1/3 w-[45rem] h-[45rem] bg-cyan-600/10 rounded-full blur-[190px] pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-20 w-[35rem] h-[35rem] bg-blue-600/15 rounded-full blur-[180px] pointer-events-none" />
+    <>
+      {/* Outer pinned scroll container: 450vh total height */}
+      <section
+        id="projects"
+        ref={containerRef}
+        className="relative h-[450vh] bg-ocean-deep"
+      >
+        {/* Sticky Viewport Stage: Locks in place while scrolling */}
+        <div className="sticky top-0 h-screen w-full flex flex-col justify-between py-8 px-4 sm:px-6 lg:px-8 overflow-hidden z-20">
+          {/* Top Bar: Section Badge & Live Step Navigation */}
+          <div className="max-w-6xl w-full mx-auto flex items-center justify-between gap-4 pt-4 shrink-0">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-xs font-mono text-cyan-300">
+                <Layers className="w-3.5 h-3.5 text-cyan-400" />
+                <span>03 // PRODUCT LAB & IMMERSIVE CASE STUDIES</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight mt-1 hidden sm:block">
+                Engineered Software Systems
+              </h2>
+            </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Section Header */}
-        <div className="max-w-3xl mb-14">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/40 border border-cyan-500/30 text-xs font-mono text-cyan-300 mb-4">
-            <span>03 // PRODUCT LAB & IMMERSIVE CASE STUDIES</span>
+            {/* Interactive Step Navigator */}
+            <div className="flex items-center gap-2 p-1.5 rounded-full bg-ocean-abyss/80 border border-white/[0.1] backdrop-blur-xl">
+              {projects.map((proj, idx) => {
+                const isActive = activeIndex === idx;
+                return (
+                  <button
+                    key={proj.id}
+                    onClick={() => scrollToStep(idx)}
+                    className={`px-3 py-1 rounded-full text-xs font-mono transition-all duration-300 ${
+                      isActive
+                        ? "bg-cyan-500 text-white font-bold shadow-md shadow-cyan-500/30 scale-105"
+                        : "text-slate-400 hover:text-white hover:bg-white/[0.05]"
+                    }`}
+                  >
+                    0{idx + 1}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-          <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
-            Engineered Software Products
-          </h2>
-          <p className="text-base sm:text-lg text-slate-300 font-light leading-relaxed">
-            Every project is treated as an interactive product—complete with live executable sandboxes, architectural decompositions, database schemas, and technical trade-offs.
-          </p>
-        </div>
 
-        {/* Category Filters */}
-        <div className="flex flex-wrap items-center gap-2 mb-12">
-          {categories.map((cat) => {
-            const isSelected = activeCategory === cat;
-            return (
-              <button
-                key={cat}
-                onClick={() => {
-                  sound.playTick();
-                  setActiveCategory(cat);
-                }}
-                className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
-                  isSelected
-                    ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/25 scale-[1.02]"
-                    : "bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 border border-white/[0.07]"
-                }`}
-              >
-                {cat}
-              </button>
-            );
-          })}
-        </div>
+          {/* Center Stage: Stacked Pinned Project Cards */}
+          <div className="relative flex-1 w-full max-w-5xl mx-auto flex items-center justify-center my-2">
+            {projects.map((project, index) => (
+              <PinnedProjectCard
+                key={project.id}
+                project={project}
+                index={index}
+                total={projects.length}
+                scrollYProgress={scrollYProgress}
+                onOpenDemo={handleOpenDemo}
+              />
+            ))}
+          </div>
 
-        {/* Project Showcase List (Full-Width Immersive Cards) */}
-        <div className="space-y-12">
-          {filteredProjects.map((proj, idx) => {
-            const hasSandbox = proj.interactiveDemoType && proj.interactiveDemoType !== "none";
-            const isSandboxOpen = activeSandboxId === proj.id;
+          {/* Bottom Bar: Scroll Indicator & Progress Line */}
+          <div className="max-w-6xl w-full mx-auto flex items-center justify-between text-xs font-mono text-slate-400 pb-2 shrink-0">
+            <div className="flex items-center gap-2">
+              <ArrowDown className="w-3.5 h-3.5 text-cyan-400 animate-bounce" />
+              <span>
+                Scroll to explore systems ({activeIndex + 1} of {projects.length})
+              </span>
+            </div>
 
-            return (
-              <motion.div
-                key={proj.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: idx * 0.1 }}
-                className="fluid-glass rounded-3xl p-6 sm:p-9 lg:p-11 relative overflow-hidden border border-white/[0.1] hover:border-cyan-400/40 transition-all duration-500 group shadow-2xl"
-              >
-                {/* Background Ambient Gradient Flare */}
-                <div
-                  className={`absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br ${proj.gradient} rounded-full blur-[140px] pointer-events-none opacity-60 group-hover:opacity-100 transition-opacity duration-700`}
+            <div className="flex items-center gap-2">
+              <span className="text-slate-500">Progress:</span>
+              <div className="w-24 sm:w-36 h-1.5 rounded-full bg-white/[0.1] overflow-hidden">
+                <motion.div
+                  style={{ scaleX: scrollYProgress, transformOrigin: "0%" }}
+                  className="h-full bg-gradient-to-r from-cyan-400 to-blue-500"
                 />
-
-                <div className="relative z-10 flex flex-col lg:flex-row lg:items-start justify-between gap-8">
-                  {/* Left Column: Product Information & Architectural Breakdown */}
-                  <div className="max-w-2xl space-y-5">
-                    <div className="flex flex-wrap items-center gap-2.5">
-                      <span className="px-3 py-1 rounded-full text-xs font-mono font-semibold bg-cyan-950/70 text-cyan-300 border border-cyan-500/30">
-                        {proj.category}
-                      </span>
-                      {hasSandbox && (
-                        <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono text-emerald-400 bg-emerald-950/50 border border-emerald-500/30 flex items-center gap-1">
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                          LIVE SANDBOX
-                        </span>
-                      )}
-                    </div>
-
-                    <h3 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                      {proj.title}
-                    </h3>
-
-                    <p className="text-sm sm:text-base text-cyan-200 font-medium">
-                      {proj.tagline}
-                    </p>
-
-                    <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-light">
-                      {proj.description}
-                    </p>
-
-                    {/* Key Technical Highlights */}
-                    <div className="space-y-2 pt-2">
-                      <div className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-2">
-                        Core Architectural Invariants:
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-300">
-                        {proj.keyFeatures.slice(0, 4).map((feat, fIdx) => (
-                          <div key={fIdx} className="flex items-start gap-2">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
-                            <span className="leading-tight">{feat}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Technology Stack Tags */}
-                    <div className="flex flex-wrap items-center gap-2 pt-3">
-                      {proj.technologies.map((tech) => (
-                        <span
-                          key={tech}
-                          className="px-3 py-1 rounded-lg text-xs font-mono bg-white/[0.04] border border-white/[0.08] text-slate-300"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Right Column: Actions & Live Sandbox Trigger */}
-                  <div className="flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0 lg:w-56">
-                    {hasSandbox && (
-                      <button
-                        onClick={() => handleOpenSandbox(proj.id)}
-                        className={`w-full py-3 px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all duration-300 shadow-lg ${
-                          isSandboxOpen
-                            ? "bg-cyan-500 text-black shadow-cyan-500/30"
-                            : "bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 text-white shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:scale-[1.02]"
-                        }`}
-                      >
-                        <Play className="w-3.5 h-3.5 fill-current" />
-                        <span>{isSandboxOpen ? "Close Live Sandbox" : "Launch Live Sandbox"}</span>
-                      </button>
-                    )}
-
-                    <button
-                      onClick={() => handleOpenCaseStudy(proj)}
-                      className="w-full py-3 px-4 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.1] text-xs font-medium text-slate-200 hover:text-white flex items-center justify-center gap-2 transition-all"
-                    >
-                      <Layers className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>Deep Case Study</span>
-                    </button>
-
-                    <div className="flex items-center gap-2 w-full pt-1">
-                      <a
-                        href={proj.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1 py-2.5 px-3 rounded-lg bg-ocean-deep hover:bg-slate-900 border border-white/[0.08] text-[11px] font-mono text-slate-300 hover:text-white flex items-center justify-center gap-1.5 transition-colors"
-                      >
-                        <Code2 className="w-3.5 h-3.5 text-cyan-400" />
-                        <span>GitHub</span>
-                      </a>
-
-                      {proj.liveUrl && (
-                        <a
-                          href={proj.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 py-2.5 px-3 rounded-lg bg-ocean-deep hover:bg-slate-900 border border-white/[0.08] text-[11px] font-mono text-slate-300 hover:text-white flex items-center justify-center gap-1.5 transition-colors"
-                        >
-                          <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
-                          <span>Demo</span>
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Inline Expandable Live Sandbox Drawer */}
-                <AnimatePresence>
-                  {isSandboxOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.4 }}
-                      className="mt-8 pt-8 border-t border-white/[0.1] overflow-hidden"
-                    >
-                      <div className="mb-4 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="h-2 w-2 rounded-full bg-cyan-400 animate-ping" />
-                          <span className="text-xs font-mono font-bold text-cyan-300">
-                            LIVE CLIENT SANDBOX // {proj.title.toUpperCase()}
-                          </span>
-                        </div>
-                        <span className="text-[11px] font-mono text-slate-400">
-                          Fully interactive in-browser simulation
-                        </span>
-                      </div>
-
-                      {proj.interactiveDemoType === "eduobal" && <EduobalInteractiveDemo />}
-                      {proj.interactiveDemoType === "sysflow" && <SysflowInteractiveDemo />}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            );
-          })}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* Case Study Deep-Dive Modal */}
-      {selectedCaseStudy && (
-        <ProjectCaseStudyModal
-          project={selectedCaseStudy}
-          onClose={() => setSelectedCaseStudy(null)}
-        />
+      {/* Interactive Sandbox Modal Overlay */}
+      {activeDemoId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300">
+          <div className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-3xl border border-white/[0.15] bg-ocean-abyss p-6 sm:p-8 shadow-2xl">
+            <div className="flex items-center justify-between pb-4 mb-6 border-b border-white/[0.1]">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-cyan-400" />
+                <span className="text-xs font-mono text-cyan-300 uppercase tracking-wider">
+                  Live Interactive Execution Sandbox
+                </span>
+              </div>
+              <button
+                onClick={handleCloseDemo}
+                className="p-1.5 rounded-full border border-white/[0.1] hover:border-cyan-400 text-slate-400 hover:text-white transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="rounded-2xl overflow-hidden bg-black/40 p-2 sm:p-4">
+              {activeDemoId === "eduobal" && <EduobalInteractiveDemo />}
+              {activeDemoId === "sysflow" && <SysflowInteractiveDemo />}
+              {activeDemoId !== "eduobal" && activeDemoId !== "sysflow" && (
+                <div className="py-12 text-center text-slate-400 font-mono text-sm">
+                  Interactive sandbox initialized for {activeDemoId}.
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
-    </section>
+    </>
   );
 }
