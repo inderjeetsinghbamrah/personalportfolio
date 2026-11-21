@@ -9,16 +9,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#030712",
-        foreground: "#F8FAFC",
+        background: "var(--canvas-bg)",
+        foreground: "var(--text-primary)",
         ocean: {
-          deep: "var(--bg-primary)",
-          abyss: "var(--bg-secondary)",
-          mariana: "var(--bg-secondary)",
-          surface: "var(--bg-card)",
-          glass: "var(--bg-card)",
-          border: "var(--border-color)",
-          "border-bright": "var(--accent-primary)",
+          deep: "var(--canvas-bg)",
+          abyss: "var(--surface-bg)",
+          mariana: "var(--surface-bg)",
+          surface: "var(--card-bg)",
+          glass: "var(--card-bg)",
+          border: "var(--border-subtle)",
+          "border-bright": "var(--accent-cyan)",
         },
         fluid: {
           cyan: "#00F2FE",

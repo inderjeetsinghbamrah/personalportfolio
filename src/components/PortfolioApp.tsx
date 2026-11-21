@@ -33,7 +33,10 @@ export default function PortfolioApp() {
   return (
     <ThemeProvider>
       <FluidSmoothScroll>
-        <div className="min-h-screen text-slate-100 selection:bg-cyan-500/30 selection:text-white relative" style={{ backgroundColor: "var(--bg-primary)" }}>
+        <div
+          className="min-h-screen selection:bg-cyan-500/30 selection:text-white relative transition-colors duration-300"
+          style={{ backgroundColor: "var(--canvas-bg)", color: "var(--text-primary)" }}
+        >
           {/* Floating Fluid Glass Capsule Navigation */}
           <FluidNavbar
             onOpenResume={() => setResumeOpen(true)}
@@ -48,37 +51,37 @@ export default function PortfolioApp() {
           />
 
           {/* Organic Wave Transition into About */}
-          <FluidWaveDivider fromColor="var(--bg-primary)" toColor="var(--bg-primary)" />
+          <FluidWaveDivider fromColor="var(--canvas-bg)" toColor="var(--canvas-bg)" />
 
           {/* Section 2: Beyond Writing Code (Editorial Journey & Pedagogy) */}
           <FluidAbout />
 
           {/* Organic Wave Transition into Tech Stack */}
-          <FluidWaveDivider fromColor="var(--bg-primary)" toColor="var(--bg-secondary)" />
+          <FluidWaveDivider fromColor="var(--canvas-bg)" toColor="var(--surface-bg)" />
 
           {/* Section 3: Interactive Technology Constellation */}
           <FluidTechStack />
 
           {/* Organic Wave Transition into Projects */}
-          <FluidWaveDivider fromColor="var(--bg-secondary)" toColor="var(--bg-primary)" />
+          <FluidWaveDivider fromColor="var(--surface-bg)" toColor="var(--canvas-bg)" />
 
           {/* Section 4: Pinned Scroll Product Lab (Cycles through all projects on scroll before moving down) */}
           <FluidProjects />
 
           {/* Organic Wave Transition into Philosophy */}
-          <FluidWaveDivider fromColor="var(--bg-primary)" toColor="var(--bg-secondary)" />
+          <FluidWaveDivider fromColor="var(--canvas-bg)" toColor="var(--surface-bg)" />
 
           {/* Section 5: Design & Engineering Philosophy River */}
           <FluidPhilosophy />
 
           {/* Organic Wave Transition into Experience */}
-          <FluidWaveDivider fromColor="var(--bg-secondary)" toColor="var(--bg-primary)" />
+          <FluidWaveDivider fromColor="var(--surface-bg)" toColor="var(--canvas-bg)" />
 
           {/* Section 6: Professional Career & Academic Chronology */}
           <FluidExperience />
 
           {/* Organic Wave Transition into Contact */}
-          <FluidWaveDivider fromColor="var(--bg-primary)" toColor="var(--bg-secondary)" />
+          <FluidWaveDivider fromColor="var(--canvas-bg)" toColor="var(--surface-bg)" />
 
           {/* Section 7: Radiant Liquid Contact & Transmission */}
           <FluidContact onOpenResume={() => setResumeOpen(true)} />

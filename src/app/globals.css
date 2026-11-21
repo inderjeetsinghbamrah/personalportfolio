@@ -3,162 +3,144 @@
 @tailwind utilities;
 
 /* =========================================================
-   CURATED MULTI-PALETTE THEME DEFINITIONS
+   TWO INTENTIONAL MODES: DARK & BRIGHT
    ========================================================= */
 
-:root {
-  --bg-primary: #060E20;
-  --bg-secondary: #0A1633;
-  --bg-card: rgba(10, 22, 51, 0.78);
-  --bg-card-hover: rgba(15, 30, 70, 0.92);
-  --text-primary: #F8FAFC;
+:root,
+html.dark {
+  --canvas-bg: #070B14;
+  --surface-bg: #0C1222;
+  --card-bg: rgba(14, 23, 46, 0.78);
+  --card-hover: rgba(20, 32, 64, 0.92);
+  --text-primary: #FFFFFF;
   --text-secondary: #94A3B8;
   --text-muted: #64748B;
-  --border-color: rgba(56, 189, 248, 0.2);
-  --accent-primary: #00F2FE;
-  --accent-secondary: #3B82F6;
-  --accent-tertiary: #06B6D4;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-highlight: rgba(56, 189, 248, 0.35);
+  --accent-cyan: #00F2FE;
+  --accent-blue: #3B82F6;
+  --accent-violet: #8B5CF6;
+  --nav-bg: rgba(7, 11, 20, 0.85);
+
+  /* Fallback aliases */
+  --bg-primary: var(--canvas-bg);
+  --bg-secondary: var(--surface-bg);
+  --bg-card: var(--card-bg);
+  --bg-card-hover: var(--card-hover);
+  --border-color: var(--border-subtle);
+  --background: var(--canvas-bg);
+  --foreground: var(--text-primary);
+
+  background-color: var(--canvas-bg);
+  color: var(--text-primary);
+  color-scheme: dark;
 }
 
-/* 1. DARK: Deep Ocean (Sapphire Navy & Electric Cyan) */
-html.theme-deep-ocean {
-  --bg-primary: #060E20;
-  --bg-secondary: #0A1633;
-  --bg-card: rgba(10, 22, 51, 0.82);
-  --bg-card-hover: rgba(15, 30, 70, 0.95);
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
-  --border-color: rgba(56, 189, 248, 0.2);
-  --accent-primary: #00F2FE;
-  --accent-secondary: #3B82F6;
-  --accent-tertiary: #06B6D4;
-  background-color: #060E20;
-  color: #F8FAFC;
-}
-
-/* 2. DARK: Cosmic Amethyst (Twilight Violet & Electric Orchid) */
-html.theme-cyber-violet {
-  --bg-primary: #0C071C;
-  --bg-secondary: #160D33;
-  --bg-card: rgba(22, 13, 51, 0.82);
-  --bg-card-hover: rgba(32, 18, 72, 0.95);
-  --text-primary: #FAF5FF;
-  --text-secondary: #C4B5FD;
-  --text-muted: #8B5CF6;
-  --border-color: rgba(192, 132, 252, 0.25);
-  --accent-primary: #C084FC;
-  --accent-secondary: #A855F7;
-  --accent-tertiary: #EC4899;
-  background-color: #0C071C;
-  color: #FAF5FF;
-}
-
-/* 3. DARK: Cyber Emerald (Alpine Slate & Neon Mint) */
-html.theme-emerald-matrix {
-  --bg-primary: #04130F;
-  --bg-secondary: #08241D;
-  --bg-card: rgba(8, 36, 29, 0.82);
-  --bg-card-hover: rgba(12, 50, 40, 0.95);
-  --text-primary: #ECFDF5;
-  --text-secondary: #A7F3D0;
-  --text-muted: #34D399;
-  --border-color: rgba(52, 211, 153, 0.25);
-  --accent-primary: #10B981;
-  --accent-secondary: #34D399;
-  --accent-tertiary: #14B8A6;
-  background-color: #04130F;
-  color: #ECFDF5;
-}
-
-/* 4. BRIGHT: Daylight Swiss (Pure Architectural White & Royal Cobalt) */
-html.theme-daylight-studio {
-  --bg-primary: #F8FAFC;
-  --bg-secondary: #EEF2F6;
-  --bg-card: rgba(255, 255, 255, 0.96);
-  --bg-card-hover: #FFFFFF;
+html.light {
+  --canvas-bg: #F8FAFC;
+  --surface-bg: #EEF2F6;
+  --card-bg: #FFFFFF;
+  --card-hover: #FFFFFF;
   --text-primary: #090D16;
   --text-secondary: #334155;
   --text-muted: #64748B;
-  --border-color: rgba(15, 23, 42, 0.12);
-  --accent-primary: #2563EB;
-  --accent-secondary: #0284C7;
-  --accent-tertiary: #4F46E5;
-  background-color: #F8FAFC;
-  color: #090D16;
+  --border-subtle: rgba(15, 23, 42, 0.1);
+  --border-highlight: rgba(37, 99, 235, 0.35);
+  --accent-cyan: #0284C7;
+  --accent-blue: #2563EB;
+  --accent-violet: #7C3AED;
+  --nav-bg: rgba(255, 255, 255, 0.9);
+
+  /* Fallback aliases */
+  --bg-primary: var(--canvas-bg);
+  --bg-secondary: var(--surface-bg);
+  --bg-card: var(--card-bg);
+  --bg-card-hover: var(--card-hover);
+  --border-color: var(--border-subtle);
+  --background: var(--canvas-bg);
+  --foreground: var(--text-primary);
+
+  background-color: var(--canvas-bg);
+  color: var(--text-primary);
+  color-scheme: light;
 }
 
-/* 5. BRIGHT: Warm Atelier (Luxury Cream & Terracotta Amber) */
-html.theme-sunset-atelier {
-  --bg-primary: #FAF7F2;
-  --bg-secondary: #F3EDE2;
-  --bg-card: rgba(255, 255, 255, 0.95);
-  --bg-card-hover: #FFFFFF;
-  --text-primary: #1C1917;
-  --text-secondary: #44403C;
-  --text-muted: #78716C;
-  --border-color: rgba(120, 113, 108, 0.16);
-  --accent-primary: #D97706;
-  --accent-secondary: #C2410C;
-  --accent-tertiary: #B45309;
-  background-color: #FAF7F2;
-  color: #1C1917;
-}
-
-/* Base Body Styles */
 * {
   box-sizing: border-box;
 }
 
 html {
-  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body {
-  background-color: var(--bg-primary);
+  background-color: var(--canvas-bg);
   color: var(--text-primary);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.4s ease, color 0.4s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* =========================================================
-   LIGHT MODE CONTRAST & READABILITY GUARANTEES
+   LIGHT MODE CONTRAST & TYPOGRAPHY SYSTEM
    ========================================================= */
 
-html.light {
-  color: var(--text-primary);
-}
-
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
 html.light .text-white,
 html.light .text-slate-100 {
-  color: var(--text-primary) !important;
+  color: #090D16 !important;
 }
 
+html.light p,
 html.light .text-slate-200,
 html.light .text-slate-300 {
-  color: var(--text-secondary) !important;
+  color: #334155 !important;
 }
 
 html.light .text-slate-400 {
-  color: var(--text-muted) !important;
+  color: #64748B !important;
 }
 
 html.light .text-cyan-200,
-html.light .text-cyan-300 {
-  color: var(--accent-primary) !important;
+html.light .text-cyan-300,
+html.light .text-cyan-400 {
+  color: #0284C7 !important;
 }
 
-/* Light Mode Card & Glass Surfaces */
+html.light .text-amber-400 {
+  color: #B45309 !important;
+}
+
+html.light .text-emerald-400 {
+  color: #047857 !important;
+}
+
+html.light .hover\:text-white:hover {
+  color: #090D16 !important;
+}
+
+html.light .group-hover\:text-white:hover,
+html.light .group:hover .group-hover\:text-white {
+  color: #090D16 !important;
+}
+
+html.light .rounded-3xl.border {
+  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.1), 0 0 0 1px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Cards & Surfaces in Light Mode */
 html.light .bg-ocean-abyss,
 html.light .bg-ocean-deep,
 html.light .fluid-glass,
 html.light .editorial-card {
-  background-color: var(--bg-card) !important;
-  border-color: var(--border-color) !important;
-  color: var(--text-primary) !important;
-  box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.03) !important;
+  background-color: #FFFFFF !important;
+  border-color: rgba(15, 23, 42, 0.1) !important;
+  color: #090D16 !important;
+  box-shadow: 0 16px 36px -12px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.03) !important;
 }
 
 html.light .bg-white\/\[0\.03\],
@@ -167,7 +149,8 @@ html.light .bg-white\/\[0\.05\],
 html.light .bg-white\/\[0\.06\],
 html.light .bg-white\/\[0\.08\],
 html.light .bg-white\/\[0\.1\] {
-  background-color: rgba(0, 0, 0, 0.04) !important;
+  background-color: #F1F5F9 !important;
+  color: #090D16 !important;
 }
 
 html.light .border-white\/\[0\.07\],
@@ -176,57 +159,127 @@ html.light .border-white\/\[0\.1\],
 html.light .border-white\/\[0\.12\],
 html.light .border-white\/\[0\.15\],
 html.light .border-white\/\[0\.2\] {
-  border-color: var(--border-color) !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
 }
 
+/* Inner problem/solution boxes in light mode */
 html.light .bg-black\/20,
 html.light .bg-black\/25,
 html.light .bg-black\/30,
 html.light .bg-black\/35,
-html.light .bg-black\/40 {
-  background-color: rgba(0, 0, 0, 0.04) !important;
+html.light .bg-black\/40,
+html.light .bg-slate-900\/60 {
+  background-color: #F1F5F9 !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
 }
 
-/* Status Pills & Tags in Light Mode */
+/* Status pills & category badges in light mode */
+html.light .bg-cyan-950\/30,
 html.light .bg-cyan-950\/40,
 html.light .bg-cyan-950\/60,
 html.light .bg-cyan-950\/70 {
-  background-color: rgba(2, 132, 199, 0.12) !important;
-  border-color: rgba(2, 132, 199, 0.3) !important;
-  color: #0284C7 !important;
+  background-color: #E0F2FE !important;
+  border-color: #BAE6FD !important;
+  color: #0369A1 !important;
 }
 
-html.light .bg-emerald-950\/50 {
-  background-color: rgba(16, 185, 129, 0.12) !important;
-  border-color: rgba(16, 185, 129, 0.3) !important;
-  color: #059669 !important;
+html.light .bg-emerald-950\/50,
+html.light .bg-emerald-500\/10 {
+  background-color: #ECFDF5 !important;
+  border-color: #A7F3D0 !important;
+  color: #047857 !important;
+}
+
+/* Secondary Action Buttons in Light Mode */
+html.light button.bg-white\/\[0\.05\],
+html.light button.bg-white\/\[0\.06\],
+html.light a.bg-white\/\[0\.03\],
+html.light a.bg-white\/\[0\.04\] {
+  background-color: #F1F5F9 !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+/* Form Inputs, Selects, and Textareas in Light Mode */
+html.light input,
+html.light textarea,
+html.light select,
+html.light option {
+  background-color: #FFFFFF !important;
+  color: #090D16 !important;
+  border-color: rgba(15, 23, 42, 0.15) !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #64748B !important;
 }
 
 /* Navbar in Light Mode */
 html.light header {
-  border-color: var(--border-color);
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+html.light header.backdrop-blur-xl {
+  background-color: var(--nav-bg) !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
 }
 
 html.light nav {
-  background: rgba(255, 255, 255, 0.85) !important;
-  border-color: var(--border-color) !important;
-  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.06) !important;
+  background-color: #FFFFFF !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.07) !important;
 }
 
-/* Radiant Text Gradients */
+html.light nav button {
+  color: #475569 !important;
+}
+
+html.light nav button:hover {
+  color: #090D16 !important;
+}
+
+/* Radiant Fluid Text Gradient */
 .fluid-gradient-text {
-  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-primary) 50%, var(--accent-secondary) 100%);
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-cyan) 50%, var(--accent-blue) 100%);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-text-fill-color: transparent !important;
+}
+
+html.light .fluid-gradient-text {
+  background: linear-gradient(135deg, #090D16 0%, #0284C7 50%, #2563EB 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
 }
 
 .fluid-gradient-cyan {
-  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-primary) 60%, var(--accent-secondary) 100%);
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-cyan) 60%, var(--accent-blue) 100%);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-text-fill-color: transparent !important;
 }
 
-/* Lenis Recommended Smooth Scroll CSS */
+html.light .fluid-gradient-cyan {
+  background: linear-gradient(135deg, #0284C7 0%, #2563EB 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* Fluid Glass Card (Dark Default) */
+.fluid-glass {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.35);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fluid-glass:hover {
+  border-color: var(--border-highlight);
+  background: var(--card-hover);
+}
+
+/* Lenis Smooth Scroll CSS */
 html.lenis, html.lenis body {
   height: auto;
 }
@@ -245,27 +298,27 @@ html.lenis, html.lenis body {
 
 /* Selection */
 ::selection {
-  background: rgba(0, 242, 254, 0.3);
+  background: rgba(0, 242, 254, 0.25);
   color: currentColor;
 }
 
-/* Clean Scrollbar */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+  background: var(--canvas-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border-color);
+  background: var(--border-subtle);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-primary);
+  background: var(--accent-cyan);
 }
 
 /* Print Styles */

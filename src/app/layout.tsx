@@ -95,7 +95,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className="theme-obsidian font-swiss-mode dark scroll-smooth">
+    <html lang="en" className="dark scroll-smooth" suppressHydrationWarning>
       <head>
         <link rel="alternate" type="text/markdown" href="/index.md" />
         <script

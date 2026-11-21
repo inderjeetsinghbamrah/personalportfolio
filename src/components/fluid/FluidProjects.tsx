@@ -109,8 +109,8 @@ function PinnedProjectCard({
         opacity,
         filter,
         zIndex: index + 10,
-        backgroundColor: "var(--bg-card)",
-        borderColor: "var(--border-color)",
+        backgroundColor: "var(--card-bg)",
+        borderColor: "var(--border-subtle)",
         color: "var(--text-primary)",
       }}
       className="absolute inset-0 m-auto w-full max-w-5xl max-h-[82vh] overflow-y-auto rounded-3xl p-6 sm:p-9 lg:p-11 border backdrop-blur-2xl shadow-2xl transition-all duration-300 will-change-transform"
@@ -300,10 +300,10 @@ export default function FluidProjects() {
         id="projects"
         ref={containerRef}
         className="relative h-[450vh] transition-colors duration-500"
-        style={{ backgroundColor: "var(--bg-secondary)" }}
+        style={{ backgroundColor: "var(--surface-bg)" }}
       >
         {/* Ambient Backdrop Blur Mask: Fades and blurs everything around the active card */}
-        <div className="absolute inset-0 pointer-events-none bg-black/35 backdrop-blur-[2px] z-10" />
+        <div className="absolute inset-0 pointer-events-none bg-black/20 dark:bg-black/40 backdrop-blur-[2px] z-10" />
 
         {/* Sticky Viewport Stage: Locks in place while scrolling */}
         <div className="sticky top-0 h-screen w-full flex flex-col justify-between py-8 px-4 sm:px-6 lg:px-8 overflow-hidden z-20">
@@ -320,7 +320,7 @@ export default function FluidProjects() {
             </div>
 
             {/* Interactive Step Navigator */}
-            <div className="flex items-center gap-2 p-1.5 rounded-full border border-white/[0.1] backdrop-blur-xl shadow-lg" style={{ backgroundColor: "var(--bg-card)" }}>
+            <div className="flex items-center gap-2 p-1.5 rounded-full border border-white/[0.1] backdrop-blur-xl shadow-lg" style={{ backgroundColor: "var(--card-bg)" }}>
               {projects.map((proj, idx) => {
                 const isActive = activeIndex === idx;
                 return (
@@ -381,7 +381,7 @@ export default function FluidProjects() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300">
           <div
             className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-3xl border border-white/[0.15] p-6 sm:p-8 shadow-2xl"
-            style={{ backgroundColor: "var(--bg-card)", color: "var(--text-primary)" }}
+            style={{ backgroundColor: "var(--card-bg)", color: "var(--text-primary)" }}
           >
             <div className="flex items-center justify-between pb-4 mb-6 border-b border-white/[0.1]">
               <div className="flex items-center gap-2">
