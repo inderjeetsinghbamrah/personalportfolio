@@ -5,7 +5,6 @@ import { Project, ProjectCategory } from "@/types/portfolio";
 import { sound } from "@/lib/sound";
 import ProjectCaseStudyModal from "@/components/projects/ProjectCaseStudyModal";
 import { Search, LayoutGrid, List, Sparkles, ArrowRight } from "lucide-react";
-import SectorGate from "@/components/character/SectorGate";
 
 interface ProjectLabProps {
   projects: Project[];
@@ -47,19 +46,6 @@ export default function ProjectLab({ projects, categories }: ProjectLabProps) {
   return (
     <section id="projects" className="py-24 border-t border-white/[0.08] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        {/* Sector Gate 04: Project Vault */}
-        <SectorGate
-          sectorId="projects"
-          actionButton={
-            featuredProject
-              ? {
-                  label: "Launch EDUOBAL Sandbox",
-                  onClick: () => setActiveProject(featuredProject),
-                }
-              : undefined
-          }
-        />
-
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>

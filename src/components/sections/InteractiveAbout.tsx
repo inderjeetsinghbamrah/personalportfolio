@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { GraduationCap, Briefcase, Lightbulb, CheckCircle2, ChevronRight, Layers, ShieldCheck, Zap } from "lucide-react";
 import { sound } from "@/lib/sound";
-import SectorGate from "@/components/character/SectorGate";
 
 interface PhilosophyItem {
   title: string;
@@ -67,9 +66,6 @@ export default function InteractiveAbout({
   return (
     <section id="about" className="py-24 border-t border-white/[0.08] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        {/* Sector Gate 02: Philosophy & Pedagogy */}
-        <SectorGate sectorId="about" />
-
         {/* Section Header */}
         <div className="mb-14">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-indigo-400 mb-3">

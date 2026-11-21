@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { Experience, Education } from "@/types/portfolio";
 import { sound } from "@/lib/sound";
 import { Briefcase, GraduationCap, Calendar, CheckCircle2 } from "lucide-react";
-import SectorGate from "@/components/character/SectorGate";
 
 interface TimelineProps {
   experience: Experience[];
@@ -25,15 +24,6 @@ export default function ExperienceTimeline({
   return (
     <section id="timeline" className="py-24 border-t border-white/[0.08] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        {/* Sector Gate 08: Chronological Timeline */}
-        <SectorGate
-          sectorId="timeline"
-          actionButton={{
-            label: activeTab === "experience" ? "View Degrees" : "View Experience",
-            onClick: () => handleTabChange(activeTab === "experience" ? "education" : "experience"),
-          }}
-        />
-
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
           <div>

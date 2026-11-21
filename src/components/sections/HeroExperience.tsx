@@ -1,11 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { ArrowRight, FileText, Send, Activity, Layers, Server, Database, Box, Cpu, RefreshCw, Play, GraduationCap, CheckCircle2 } from "lucide-react";
+import { ArrowRight, FileText, Send, Activity, Layers, Server, Database, Box, Cpu, RefreshCw, GraduationCap, CheckCircle2 } from "lucide-react";
 import { sound } from "@/lib/sound";
 import dynamic from "next/dynamic";
-import SectorGate from "@/components/character/SectorGate";
-import { useSector } from "@/context/SectorContext";
 
 // Dynamically import 3D Character Hero Stage for client WebGL
 const HeroCharacterStage = dynamic(
@@ -138,8 +136,6 @@ export default function HeroExperience({
     setSelectedNode(id);
   };
 
-  const { startGuidedTour } = useSector();
-
   const handleSimChange = (mode: "normal" | "spike" | "cache_miss" | "failover") => {
     sound.playTick();
     setSimMode(mode);
@@ -152,11 +148,8 @@ export default function HeroExperience({
       <div className="absolute top-1/3 right-10 w-[400px] h-[350px] bg-sky-500/[0.06] blur-[120px] pointer-events-none rounded-full" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-        {/* Sector Gate 01: Hero Command Deck */}
-        <SectorGate sectorId="lab" />
-
         {/* 2-Column Desktop Grid: Storytelling & Action Left / 3D Developer Stage Right */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-16">
           {/* Left Column */}
           <div className="lg:col-span-7 space-y-6">
             {/* Top Identity Meta */}
@@ -185,31 +178,23 @@ export default function HeroExperience({
               {subheadline}
             </p>
 
-            {/* Action CTAs */}
+            {/* Action CTAs (Clean, uncluttered, focused) */}
             <div className="flex flex-wrap items-center gap-3 pt-2">
-              <button
-                onClick={startGuidedTour}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-semibold text-sm transition-all shadow-lg shadow-indigo-600/30 hover:shadow-indigo-500/40"
-              >
-                <Play className="w-4 h-4 text-sky-200 fill-sky-200" />
-                <span>Start Guided Tour</span>
-              </button>
-
               <button
                 onClick={() => {
                   sound.playTick();
                   onViewProjects();
                 }}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.12] text-slate-200 hover:text-white font-medium text-sm transition-all"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-all shadow-lg shadow-indigo-600/30 hover:shadow-indigo-500/40"
               >
-                <span>Project Lab</span>
-                <ArrowRight className="w-4 h-4 text-indigo-400" />
+                <span>Explore Project Lab</span>
+                <ArrowRight className="w-4 h-4 text-white" />
               </button>
 
               <a
                 href="#contact"
                 onClick={() => sound.playTick()}
-                className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] text-slate-300 hover:text-white font-medium text-sm transition-all"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.12] text-slate-200 hover:text-white font-medium text-sm transition-all"
               >
                 <Send className="w-4 h-4 text-indigo-400" />
                 <span>Let&apos;s Connect</span>
@@ -220,7 +205,7 @@ export default function HeroExperience({
                   sound.playTick();
                   onOpenResume();
                 }}
-                className="inline-flex items-center gap-1.5 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] text-slate-300 hover:text-white font-mono text-xs transition-all"
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] text-slate-300 hover:text-white font-mono text-xs transition-all"
               >
                 <FileText className="w-3.5 h-3.5 text-sky-400" />
                 <span>Resume</span>
@@ -246,7 +231,7 @@ export default function HeroExperience({
             </div>
           </div>
 
-          {/* Right Column: 3D Holographic Developer Character Stage */}
+          {/* Right Column: 3D Developer Stage (Clean, no floating popups) */}
           <div className="lg:col-span-5 flex justify-center">
             <HeroCharacterStage />
           </div>

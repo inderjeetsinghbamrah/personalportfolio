@@ -1,16 +1,11 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { sound } from "@/lib/sound";
-import { useSector } from "@/context/SectorContext";
-import { Bot, Compass, Zap, Play, ChevronRight } from "lucide-react";
 
 export default function HeroCharacterStage() {
   const mountRef = useRef<HTMLDivElement>(null);
   const mousePos = useRef({ x: 0, y: 0 });
-  const [thrusterBoost, setThrusterBoost] = useState(false);
-  const { startGuidedTour, nextSector, activeSector } = useSector();
 
   // Interactive 3D WebGL Developer Canvas Engine
   useEffect(() => {
@@ -32,10 +27,10 @@ export default function HeroCharacterStage() {
     container.appendChild(renderer.domElement);
 
     // 2. High-Tech Cyber Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
     scene.add(ambientLight);
 
-    const violetKeyLight = new THREE.DirectionalLight(0x818cf8, 3.0);
+    const violetKeyLight = new THREE.DirectionalLight(0x818cf8, 3.2);
     violetKeyLight.position.set(5, 5, 5);
     scene.add(violetKeyLight);
 
@@ -122,13 +117,6 @@ export default function HeroCharacterStage() {
     rightArm.rotation.z = -0.35;
     characterGroup.add(rightArm);
 
-    // Holographic Datapad in Right Hand
-    const datapadGeo = new THREE.PlaneGeometry(0.45, 0.28);
-    const datapad = new THREE.Mesh(datapadGeo, glowCyanMaterial);
-    datapad.position.set(0.9, -0.3, 0.35);
-    datapad.rotation.x = -Math.PI / 4;
-    characterGroup.add(datapad);
-
     // Orbiting Telemetry Drone ("CORE-01")
     const droneGroup = new THREE.Group();
     scene.add(droneGroup);
@@ -142,7 +130,7 @@ export default function HeroCharacterStage() {
     droneGroup.add(droneRing);
 
     // Particle Thruster Trail System
-    const particleCount = 50;
+    const particleCount = 40;
     const particleGeo = new THREE.BufferGeometry();
     const particlePositions = new Float32Array(particleCount * 3);
     const particleVelocities: { x: number; y: number; z: number }[] = [];
@@ -161,9 +149,9 @@ export default function HeroCharacterStage() {
     particleGeo.setAttribute("position", new THREE.BufferAttribute(particlePositions, 3));
     const particleMat = new THREE.PointsMaterial({
       color: 0x38bdf8,
-      size: 0.09,
+      size: 0.08,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.8,
     });
     const particleSystem = new THREE.Points(particleGeo, particleMat);
     characterGroup.add(particleSystem);
@@ -186,20 +174,20 @@ export default function HeroCharacterStage() {
       const elapsed = clock.getElapsedTime();
 
       // Hovering bobbing
-      characterGroup.position.y = Math.sin(elapsed * 2.8) * 0.18;
-      characterGroup.rotation.y = Math.sin(elapsed * 1.3) * 0.12 + mousePos.current.x * 0.45;
+      characterGroup.position.y = Math.sin(elapsed * 2.5) * 0.15;
+      characterGroup.rotation.y = Math.sin(elapsed * 1.2) * 0.1 + mousePos.current.x * 0.4;
       characterGroup.rotation.x = -mousePos.current.y * 0.3;
 
       // Head cursor tracking
-      headGroup.rotation.y = mousePos.current.x * 0.7;
-      headGroup.rotation.x = -mousePos.current.y * 0.45;
+      headGroup.rotation.y = mousePos.current.x * 0.6;
+      headGroup.rotation.x = -mousePos.current.y * 0.4;
 
       // Typing motion
-      rightArm.rotation.x = Math.sin(elapsed * 5.5) * 0.2;
-      leftArm.rotation.x = Math.cos(elapsed * 5.5) * 0.2;
+      rightArm.rotation.x = Math.sin(elapsed * 5.5) * 0.18;
+      leftArm.rotation.x = Math.cos(elapsed * 5.5) * 0.18;
 
       // Thruster flame scale
-      const flamePulse = 1 + Math.sin(elapsed * 20) * 0.35;
+      const flamePulse = 1 + Math.sin(elapsed * 20) * 0.3;
       leftThruster.scale.set(flamePulse, flamePulse, flamePulse);
       rightThruster.scale.set(flamePulse, flamePulse, flamePulse);
 
@@ -212,7 +200,7 @@ export default function HeroCharacterStage() {
       const orbitSpeed = elapsed * 2.2;
       droneGroup.position.x = Math.cos(orbitSpeed) * orbitRadius;
       droneGroup.position.z = Math.sin(orbitSpeed) * orbitRadius;
-      droneGroup.position.y = Math.sin(elapsed * 3.5) * 0.45 + 0.35;
+      droneGroup.position.y = Math.sin(elapsed * 3.5) * 0.4 + 0.3;
       droneRing.rotation.x += 0.035;
       droneRing.rotation.y += 0.045;
 
@@ -224,9 +212,9 @@ export default function HeroCharacterStage() {
         positions[i * 3 + 2] += particleVelocities[i].z;
 
         if (positions[i * 3 + 1] < -2.0) {
-          positions[i * 3] = (Math.random() - 0.5) * 0.28;
+          positions[i * 3] = (Math.random() - 0.5) * 0.25;
           positions[i * 3 + 1] = -0.6;
-          positions[i * 3 + 2] = -0.42 + (Math.random() - 0.5) * 0.28;
+          positions[i * 3 + 2] = -0.42 + (Math.random() - 0.5) * 0.25;
         }
       }
       particleGeo.attributes.position.needsUpdate = true;
@@ -243,109 +231,34 @@ export default function HeroCharacterStage() {
     };
   }, []);
 
-  const handleBurst = () => {
-    sound.playTick();
-    setThrusterBoost(true);
-    setTimeout(() => setThrusterBoost(false), 800);
-  };
-
   return (
-    <div className="relative w-full max-w-lg mx-auto lg:max-w-none">
-      {/* Outer Holographic Containment Ring & Glowing Ambient Halo */}
-      <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 via-sky-500/30 to-violet-500/20 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse" />
+    <div className="relative w-full max-w-md mx-auto">
+      {/* Subtle outer glow halo */}
+      <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/15 via-sky-500/20 to-violet-500/15 rounded-3xl blur-xl opacity-60 pointer-events-none" />
 
-      {/* Main Holographic Terminal Deck */}
-      <div className="relative rounded-2xl bg-[#090C15]/90 border border-white/[0.12] shadow-2xl p-4 sm:p-5 backdrop-blur-xl">
-        {/* Top Telemetry Header Bar */}
-        <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/[0.08]">
+      {/* Clean 3D Stage Container */}
+      <div className="relative rounded-2xl bg-[#090C15]/90 border border-white/[0.1] shadow-2xl p-4 backdrop-blur-xl">
+        {/* Top Minimal Telemetry Bar */}
+        <div className="flex items-center justify-between pb-3 mb-2 border-b border-white/[0.06]">
           <div className="flex items-center gap-2">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
-            <span className="text-[11px] font-mono font-bold tracking-wider text-emerald-400">
-              ARCHITECT BOT // ONLINE
+            <span className="text-[11px] font-mono font-bold tracking-wider text-slate-300">
+              ARCHITECT BOT // SIMULATION
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-[10px] font-mono text-slate-400">
-            <span className="bg-white/[0.05] px-2 py-0.5 rounded border border-white/[0.06]">
-              60 FPS WebGL
-            </span>
-            <span className="text-sky-400 font-semibold">CORE-01 ACTIVE</span>
-          </div>
+          <span className="text-[10px] font-mono text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">
+            Interactive WebGL
+          </span>
         </div>
 
-        {/* 3D WebGL Avatar Viewport */}
-        <div className="relative h-64 sm:h-72 w-full rounded-xl bg-gradient-to-b from-[#080A12] to-[#0D111D] border border-white/[0.06] flex items-center justify-center overflow-hidden">
-          {/* Subtle cyber grid background in 3D viewport */}
-          <div className="absolute inset-0 bg-grid opacity-20 pointer-events-none" />
-
-          {/* Mount Three.js Canvas */}
+        {/* 3D WebGL Canvas */}
+        <div className="relative h-72 sm:h-80 w-full rounded-xl bg-gradient-to-b from-[#080A12] to-[#0D111D] border border-white/[0.05] flex items-center justify-center overflow-hidden">
+          <div className="absolute inset-0 bg-grid opacity-15 pointer-events-none" />
           <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
-
-          {/* Floating HUD Overlays inside Canvas */}
-          <div className="absolute top-2.5 left-2.5 px-2 py-1 rounded bg-[#090B12]/80 border border-white/[0.08] text-[9px] font-mono text-indigo-300 pointer-events-none">
-            ESCORT PROTOCOL: READY
-          </div>
-
-          <div className="absolute top-2.5 right-2.5 px-2 py-1 rounded bg-[#090B12]/80 border border-white/[0.08] text-[9px] font-mono text-sky-300 pointer-events-none">
-            {activeSector.tag}
-          </div>
-
-          {/* Bottom Floating Dialogue Prompt */}
-          <div className="absolute bottom-2.5 inset-x-2.5 p-2 rounded-lg bg-[#090B12]/90 border border-indigo-500/30 backdrop-blur-md text-[11px] font-mono text-slate-200 flex items-center justify-between gap-2 shadow-lg">
-            <div className="flex items-center gap-2 truncate">
-              <Bot className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-              <span className="truncate">&ldquo;{activeSector.greeting}&rdquo;</span>
-            </div>
-            <button
-              onClick={handleBurst}
-              className={`shrink-0 px-2 py-0.5 rounded text-[10px] font-bold font-mono transition-all ${
-                thrusterBoost
-                  ? "bg-cyan-500 text-black shadow-lg shadow-cyan-500/50"
-                  : "bg-white/[0.06] hover:bg-white/[0.12] text-slate-300"
-              }`}
-              title="Pulse Jetpack"
-            >
-              <Zap className="w-3 h-3 text-cyan-400 inline mr-0.5" />
-              PULSE
-            </button>
-          </div>
-        </div>
-
-        {/* Interactive Guided Tour & Sector Control Deck */}
-        <div className="mt-4 pt-3 border-t border-white/[0.08] space-y-3">
-          <div className="flex items-center justify-between text-xs font-mono">
-            <span className="text-slate-400 flex items-center gap-1.5">
-              <Compass className="w-3.5 h-3.5 text-indigo-400" />
-              <span>ACTIVE SECTOR:</span>
-              <strong className="text-white">{activeSector.shortTitle}</strong>
-            </span>
-            <span className="text-sky-400 font-semibold">{activeSector.tag}</span>
-          </div>
-
-          {/* Action Button Row */}
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={startGuidedTour}
-              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white text-xs font-semibold shadow-lg shadow-indigo-600/30 transition-all group"
-            >
-              <Play className="w-3.5 h-3.5 text-sky-200 fill-sky-200 group-hover:scale-110 transition-transform" />
-              <span>Start Guided Tour</span>
-            </button>
-
-            <button
-              onClick={() => {
-                sound.playTick();
-                nextSector();
-              }}
-              className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.1] text-slate-200 hover:text-white text-xs font-medium transition-all"
-            >
-              <span>Fly to Next Sector</span>
-              <ChevronRight className="w-3.5 h-3.5 text-indigo-400" />
-            </button>
-          </div>
         </div>
       </div>
     </div>

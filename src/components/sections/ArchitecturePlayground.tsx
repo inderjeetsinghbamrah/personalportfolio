@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { ArchitectureDemo } from "@/types/portfolio";
 import { sound } from "@/lib/sound";
 import { ArrowRight, Play, Shield, Activity } from "lucide-react";
-import SectorGate from "@/components/character/SectorGate";
 
 interface ArchPlaygroundProps {
   demos: ArchitectureDemo[];
@@ -52,15 +51,6 @@ export default function ArchitecturePlayground({ demos }: ArchPlaygroundProps) {
   return (
     <section id="architecture" className="py-24 border-t border-white/[0.08] relative bg-grid">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-        {/* Sector Gate 05: System Architecture Playground */}
-        <SectorGate
-          sectorId="architecture"
-          actionButton={{
-            label: "Trace Packet Flow",
-            onClick: handleStepSimulation,
-          }}
-        />
-
         {/* Section Header */}
         <div className="mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-sky-400 mb-3">
