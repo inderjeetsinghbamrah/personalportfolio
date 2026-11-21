@@ -34,39 +34,71 @@ function PinnedProjectCard({
 }: PinnedProjectCardProps) {
   const hasDemo = project.interactiveDemoType && project.interactiveDemoType !== "none";
 
-  // Compute entry and exit scroll thresholds
-  // 4 cards: thresholds around [0, 0.25, 0.50, 0.75, 1.0]
-  const enterStart = index === 0 ? 0 : (index - 1) * 0.25 + 0.18;
-  const enterEnd = index === 0 ? 0 : index * 0.25 + 0.05;
+  // Compute entry and exit scroll thresholds for 4 cards across [0, 1]
+  const enterStart = index === 0 ? 0 : (index - 1) * 0.25 + 0.16;
+  const enterEnd = index === 0 ? 0 : index * 0.25 + 0.04;
 
-  const exitStart = index * 0.25 + 0.18;
-  const exitEnd = (index + 1) * 0.25 + 0.05;
+  const exitStart = index * 0.25 + 0.16;
+  const exitEnd = (index + 1) * 0.25 + 0.04;
 
-  // Y transform: Card 0 starts at 0. Subsequent cards start at 100vh and slide up to 0.
+  // Y Transform: glides in from bottom (110vh), sits at 0, drifts slightly up on exit (-8vh)
   const y = useTransform(
     scrollYProgress,
     index === 0
-      ? [0, 1]
-      : [enterStart - 0.02, enterStart, enterEnd],
-    index === 0 ? ["0vh", "0vh"] : ["110vh", "110vh", "0vh"]
+      ? [0, exitStart, Math.min(exitEnd, 1)]
+      : index === total - 1
+      ? [Math.max(enterStart - 0.01, 0), enterStart, enterEnd, 1]
+      : [Math.max(enterStart - 0.01, 0), enterStart, enterEnd, exitStart, exitEnd],
+    index === 0
+      ? ["0vh", "0vh", "-8vh"]
+      : index === total - 1
+      ? ["110vh", "110vh", "0vh", "0vh"]
+      : ["110vh", "110vh", "0vh", "0vh", "-8vh"]
   );
 
-  // Scale down when next card arrives over it
+  // Scale Transform: expands to 1.0 at peak, scales down to 0.88 when exiting or waiting
   const scale = useTransform(
     scrollYProgress,
-    index === total - 1
-      ? [0, 1]
-      : [exitStart, exitEnd],
-    index === total - 1 ? [1, 1] : [1, 0.94]
+    index === 0
+      ? [0, exitStart, Math.min(exitEnd, 1)]
+      : index === total - 1
+      ? [Math.max(enterStart - 0.01, 0), enterStart, enterEnd, 1]
+      : [Math.max(enterStart - 0.01, 0), enterStart, enterEnd, exitStart, exitEnd],
+    index === 0
+      ? [1, 1, 0.88]
+      : index === total - 1
+      ? [0.88, 0.88, 1, 1]
+      : [0.88, 0.88, 1, 1, 0.88]
   );
 
-  // Opacity fades slightly when pushed to the background
+  // Opacity Transform: 0 when waiting, 1 when active, 0.05 when blurred into background
   const opacity = useTransform(
     scrollYProgress,
-    index === total - 1
-      ? [0, 1]
-      : [exitStart, exitEnd],
-    index === total - 1 ? [1, 1] : [1, 0.35]
+    index === 0
+      ? [0, exitStart, Math.min(exitEnd, 1)]
+      : index === total - 1
+      ? [Math.max(enterStart - 0.01, 0), enterStart, enterEnd, 1]
+      : [Math.max(enterStart - 0.01, 0), enterStart, enterEnd, exitStart, exitEnd],
+    index === 0
+      ? [1, 1, 0.05]
+      : index === total - 1
+      ? [0, 0, 1, 1]
+      : [0, 0, 1, 1, 0.05]
+  );
+
+  // Filter Transform: blur(28px) when in background or approaching, blur(0px) when active
+  const filter = useTransform(
+    scrollYProgress,
+    index === 0
+      ? [0, exitStart, Math.min(exitEnd, 1)]
+      : index === total - 1
+      ? [Math.max(enterStart - 0.01, 0), enterStart, enterEnd, 1]
+      : [Math.max(enterStart - 0.01, 0), enterStart, enterEnd, exitStart, exitEnd],
+    index === 0
+      ? ["blur(0px)", "blur(0px)", "blur(28px)"]
+      : index === total - 1
+      ? ["blur(28px)", "blur(28px)", "blur(0px)", "blur(0px)"]
+      : ["blur(28px)", "blur(28px)", "blur(0px)", "blur(0px)", "blur(28px)"]
   );
 
   return (
@@ -75,9 +107,13 @@ function PinnedProjectCard({
         y,
         scale,
         opacity,
+        filter,
         zIndex: index + 10,
+        backgroundColor: "var(--bg-card)",
+        borderColor: "var(--border-color)",
+        color: "var(--text-primary)",
       }}
-      className="absolute inset-0 m-auto w-full max-w-5xl max-h-[82vh] overflow-y-auto rounded-3xl p-6 sm:p-9 lg:p-11 border border-white/[0.12] bg-ocean-abyss/90 backdrop-blur-2xl shadow-2xl transition-shadow duration-500 hover:border-cyan-400/40"
+      className="absolute inset-0 m-auto w-full max-w-5xl max-h-[82vh] overflow-y-auto rounded-3xl p-6 sm:p-9 lg:p-11 border backdrop-blur-2xl shadow-2xl transition-all duration-300 will-change-transform"
     >
       {/* Background Ambient Radial Flare */}
       <div
@@ -131,7 +167,7 @@ function PinnedProjectCard({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => sound.playTick()}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium bg-white text-slate-900 hover:bg-cyan-200 transition-colors font-semibold"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium bg-foreground text-background hover:opacity-90 transition-opacity font-semibold"
               >
                 <span>Live Site</span>
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -144,11 +180,11 @@ function PinnedProjectCard({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column */}
           <div className="lg:col-span-8 space-y-4">
-            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight">
               {project.title}
             </h3>
 
-            <p className="text-sm sm:text-base text-cyan-300 font-medium">
+            <p className="text-sm sm:text-base text-cyan-400 font-medium">
               {project.tagline}
             </p>
 
@@ -158,7 +194,7 @@ function PinnedProjectCard({
 
             {/* Problem & Solution Invariants */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3">
-              <div className="p-4 rounded-xl border border-white/[0.08] bg-black/30">
+              <div className="p-4 rounded-xl border border-white/[0.08] bg-black/25">
                 <div className="text-[11px] font-mono text-amber-400 uppercase tracking-wider mb-1">
                   The Problem
                 </div>
@@ -167,7 +203,7 @@ function PinnedProjectCard({
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl border border-white/[0.08] bg-black/30">
+              <div className="p-4 rounded-xl border border-white/[0.08] bg-black/25">
                 <div className="text-[11px] font-mono text-cyan-400 uppercase tracking-wider mb-1">
                   Architectural Solution
                 </div>
@@ -263,24 +299,28 @@ export default function FluidProjects() {
       <section
         id="projects"
         ref={containerRef}
-        className="relative h-[450vh] bg-ocean-deep"
+        className="relative h-[450vh] transition-colors duration-500"
+        style={{ backgroundColor: "var(--bg-secondary)" }}
       >
+        {/* Ambient Backdrop Blur Mask: Fades and blurs everything around the active card */}
+        <div className="absolute inset-0 pointer-events-none bg-black/35 backdrop-blur-[2px] z-10" />
+
         {/* Sticky Viewport Stage: Locks in place while scrolling */}
         <div className="sticky top-0 h-screen w-full flex flex-col justify-between py-8 px-4 sm:px-6 lg:px-8 overflow-hidden z-20">
           {/* Top Bar: Section Badge & Live Step Navigation */}
-          <div className="max-w-6xl w-full mx-auto flex items-center justify-between gap-4 pt-4 shrink-0">
+          <div className="max-w-6xl w-full mx-auto flex items-center justify-between gap-4 pt-4 shrink-0 transition-opacity duration-300">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-xs font-mono text-cyan-300">
                 <Layers className="w-3.5 h-3.5 text-cyan-400" />
                 <span>03 // PRODUCT LAB & IMMERSIVE CASE STUDIES</span>
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight mt-1 hidden sm:block">
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight mt-1 hidden sm:block">
                 Engineered Software Systems
               </h2>
             </div>
 
             {/* Interactive Step Navigator */}
-            <div className="flex items-center gap-2 p-1.5 rounded-full bg-ocean-abyss/80 border border-white/[0.1] backdrop-blur-xl">
+            <div className="flex items-center gap-2 p-1.5 rounded-full border border-white/[0.1] backdrop-blur-xl shadow-lg" style={{ backgroundColor: "var(--bg-card)" }}>
               {projects.map((proj, idx) => {
                 const isActive = activeIndex === idx;
                 return (
@@ -300,7 +340,7 @@ export default function FluidProjects() {
             </div>
           </div>
 
-          {/* Center Stage: Stacked Pinned Project Cards */}
+          {/* Center Stage: Stacked Pinned Project Cards with Deep Blur & Fade Transitions */}
           <div className="relative flex-1 w-full max-w-5xl mx-auto flex items-center justify-center my-2">
             {projects.map((project, index) => (
               <PinnedProjectCard
@@ -339,7 +379,10 @@ export default function FluidProjects() {
       {/* Interactive Sandbox Modal Overlay */}
       {activeDemoId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300">
-          <div className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-3xl border border-white/[0.15] bg-ocean-abyss p-6 sm:p-8 shadow-2xl">
+          <div
+            className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-3xl border border-white/[0.15] p-6 sm:p-8 shadow-2xl"
+            style={{ backgroundColor: "var(--bg-card)", color: "var(--text-primary)" }}
+          >
             <div className="flex items-center justify-between pb-4 mb-6 border-b border-white/[0.1]">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-cyan-400" />

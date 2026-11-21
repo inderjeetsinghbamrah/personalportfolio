@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { Newsreader } from "next/font/google";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -13,14 +12,6 @@ const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
-});
-
-const newsreader = Newsreader({
-  subsets: ["latin"],
-  variable: "--font-newsreader",
-  style: ["normal", "italic"],
-  display: "swap",
-  adjustFontFallback: false,
 });
 
 export const viewport: Viewport = {
@@ -113,7 +104,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable} antialiased bg-ocean-deep text-slate-100 selection:bg-cyan-500/30 selection:text-white`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased selection:bg-cyan-500/30 selection:text-white`}
       >
         {children}
       </body>

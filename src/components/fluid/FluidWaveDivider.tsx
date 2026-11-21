@@ -10,8 +10,8 @@ interface WaveDividerProps {
 }
 
 export default function FluidWaveDivider({
-  fromColor = "#030712",
-  toColor = "#04091A",
+  fromColor = "var(--bg-primary)",
+  toColor = "var(--bg-secondary)",
   inverted = false,
 }: WaveDividerProps) {
   return (

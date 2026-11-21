@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { ThemeProvider } from "@/context/ThemeContext";
 import FluidSmoothScroll from "@/components/fluid/FluidSmoothScroll";
 import FluidNavbar from "@/components/fluid/FluidNavbar";
 import FluidHero from "@/components/fluid/FluidHero";
@@ -30,13 +31,14 @@ export default function PortfolioApp() {
   };
 
   return (
-    <FluidSmoothScroll>
-      <div className="min-h-screen bg-ocean-deep text-slate-100 selection:bg-cyan-500/30 selection:text-white relative">
-        {/* Floating Fluid Glass Capsule Navigation */}
-        <FluidNavbar
-          onOpenResume={() => setResumeOpen(true)}
-          onOpenCommandPalette={() => setCommandPaletteOpen(true)}
-        />
+    <ThemeProvider>
+      <FluidSmoothScroll>
+        <div className="min-h-screen text-slate-100 selection:bg-cyan-500/30 selection:text-white relative" style={{ backgroundColor: "var(--bg-primary)" }}>
+          {/* Floating Fluid Glass Capsule Navigation */}
+          <FluidNavbar
+            onOpenResume={() => setResumeOpen(true)}
+            onOpenCommandPalette={() => setCommandPaletteOpen(true)}
+          />
 
         <main>
           {/* Section 1: Cinematic Fluid Hero with 3D Liquid Mesh */}
@@ -46,37 +48,37 @@ export default function PortfolioApp() {
           />
 
           {/* Organic Wave Transition into About */}
-          <FluidWaveDivider fromColor="#030712" toColor="#030712" />
+          <FluidWaveDivider fromColor="var(--bg-primary)" toColor="var(--bg-primary)" />
 
           {/* Section 2: Beyond Writing Code (Editorial Journey & Pedagogy) */}
           <FluidAbout />
 
           {/* Organic Wave Transition into Tech Stack */}
-          <FluidWaveDivider fromColor="#030712" toColor="#04091A" />
+          <FluidWaveDivider fromColor="var(--bg-primary)" toColor="var(--bg-secondary)" />
 
           {/* Section 3: Interactive Technology Constellation */}
           <FluidTechStack />
 
           {/* Organic Wave Transition into Projects */}
-          <FluidWaveDivider fromColor="#04091A" toColor="#030712" />
+          <FluidWaveDivider fromColor="var(--bg-secondary)" toColor="var(--bg-primary)" />
 
           {/* Section 4: Pinned Scroll Product Lab (Cycles through all projects on scroll before moving down) */}
           <FluidProjects />
 
           {/* Organic Wave Transition into Philosophy */}
-          <FluidWaveDivider fromColor="#030712" toColor="#04091A" />
+          <FluidWaveDivider fromColor="var(--bg-primary)" toColor="var(--bg-secondary)" />
 
           {/* Section 5: Design & Engineering Philosophy River */}
           <FluidPhilosophy />
 
           {/* Organic Wave Transition into Experience */}
-          <FluidWaveDivider fromColor="#04091A" toColor="#030712" />
+          <FluidWaveDivider fromColor="var(--bg-secondary)" toColor="var(--bg-primary)" />
 
           {/* Section 6: Professional Career & Academic Chronology */}
           <FluidExperience />
 
           {/* Organic Wave Transition into Contact */}
-          <FluidWaveDivider fromColor="#030712" toColor="#04091A" />
+          <FluidWaveDivider fromColor="var(--bg-primary)" toColor="var(--bg-secondary)" />
 
           {/* Section 7: Radiant Liquid Contact & Transmission */}
           <FluidContact onOpenResume={() => setResumeOpen(true)} />
@@ -101,5 +103,6 @@ export default function PortfolioApp() {
         />
       </div>
     </FluidSmoothScroll>
+  </ThemeProvider>
   );
 }

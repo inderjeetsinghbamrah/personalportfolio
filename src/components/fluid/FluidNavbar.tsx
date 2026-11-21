@@ -6,6 +6,7 @@ import { useScroll, motion } from "framer-motion";
 import { Volume2, VolumeX, FileText, Command, Menu, X, Shield } from "lucide-react";
 import { sound } from "@/lib/sound";
 import { PORTFOLIO_CONTENT } from "@/data/portfolio-content";
+import ThemeSwitcher from "@/components/fluid/ThemeSwitcher";
 
 interface FluidNavbarProps {
   onOpenResume: () => void;
@@ -142,6 +143,9 @@ export default function FluidNavbar({ onOpenResume, onOpenCommandPalette }: Flui
               </span>
               <span className="text-[11px] font-semibold">Available</span>
             </div>
+
+            {/* Theme Palette Switcher */}
+            <ThemeSwitcher />
 
             {/* Sound Toggle */}
             <button
