@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { sound } from "@/lib/sound";
-import { Search, X, ArrowRight, FileText, Send, Sparkles, Terminal, Layers, Database } from "lucide-react";
+import { Search, X, ArrowRight, FileText, Send, Sparkles, Layers, Database } from "lucide-react";
 
 interface PaletteProps {
   isOpen: boolean;
@@ -29,15 +29,13 @@ export default function CommandPalette({ isOpen, onClose, onOpenResume }: Palett
   if (!isOpen) return null;
 
   const actions = [
-    { id: "hero", label: "Jump to Architecture Lab (Hero)", icon: Layers, href: "#lab" },
-    { id: "about", label: "About & Engineering Philosophy", icon: Sparkles, href: "#about" },
-    { id: "stack", label: "Interactive Technology Constellation", icon: Database, href: "#ecosystem" },
-    { id: "projects", label: "Project Lab (EDUOBAL, SysFlow)", icon: Sparkles, href: "#projects" },
-    { id: "arch", label: "System Architecture Playground", icon: Layers, href: "#architecture" },
-    { id: "design", label: "Design Token & State Lab", icon: Sparkles, href: "#design" },
-    { id: "dev", label: "Terminal & API Developer Playground", icon: Terminal, href: "#playground" },
-    { id: "timeline", label: "Experience & Education Timeline", icon: FileText, href: "#timeline" },
-    { id: "contact", label: "Initiate Transmission (Contact)", icon: Send, href: "#contact" },
+    { id: "hero", label: "Hero: Engineering Digital Experiences", icon: Layers, href: "#hero" },
+    { id: "about", label: "About: Beyond Writing Code (Pedagogy & Architecture)", icon: Sparkles, href: "#about" },
+    { id: "stack", label: "Stack: Interactive Technology Constellation", icon: Database, href: "#stack" },
+    { id: "projects", label: "Projects: Product Lab (EDUOBAL, SysFlow)", icon: Sparkles, href: "#projects" },
+    { id: "philosophy", label: "Philosophy: Design is not decoration. It's functionality.", icon: Layers, href: "#philosophy" },
+    { id: "timeline", label: "Journey: Professional Career & Academic Chronology", icon: FileText, href: "#experience" },
+    { id: "contact", label: "Contact: Have an idea worth building? (Transmission)", icon: Send, href: "#contact" },
   ];
 
   const filtered = actions.filter((a) =>
@@ -78,10 +76,10 @@ export default function CommandPalette({ isOpen, onClose, onOpenResume }: Palett
               onClose();
               onOpenResume();
             }}
-            className="w-full p-2.5 rounded-lg hover:bg-white/[0.05] text-left flex items-center justify-between text-xs font-medium text-indigo-300 transition-colors"
+            className="w-full p-2.5 rounded-lg hover:bg-white/[0.05] text-left flex items-center justify-between text-xs font-medium text-cyan-300 transition-colors"
           >
             <div className="flex items-center gap-2.5">
-              <FileText className="w-4 h-4 text-indigo-400" />
+              <FileText className="w-4 h-4 text-cyan-400" />
               <span>Open Verified Engineering Resume</span>
             </div>
             <span className="font-mono text-[10px] text-slate-500">MODAL</span>

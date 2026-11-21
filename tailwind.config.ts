@@ -9,25 +9,26 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#08090C",
+        background: "#030712",
         foreground: "#F8FAFC",
-        surface: {
-          base: "#08090C",
-          card: "#0E1017",
-          panel: "#141824",
-          elevated: "#1B2030",
-          border: "rgba(255, 255, 255, 0.08)",
-          "border-bright": "rgba(255, 255, 255, 0.16)",
+        ocean: {
+          deep: "#030712",
+          abyss: "#04091A",
+          mariana: "#060D24",
+          surface: "#0A1435",
+          glass: "rgba(6, 13, 36, 0.75)",
+          border: "rgba(255, 255, 255, 0.1)",
+          "border-bright": "rgba(34, 211, 238, 0.35)",
         },
-        brand: {
-          violet: "#6366F1",
-          indigo: "#4F46E5",
-          purple: "#8B5CF6",
-          cyan: "#00E5FF",
-          sky: "#38BDF8",
-          emerald: "#10B981",
-          amber: "#F59E0B",
-          rose: "#F43F5E",
+        fluid: {
+          cyan: "#00F2FE",
+          electric: "#22D3EE",
+          turquoise: "#06B6D4",
+          blue: "#3B82F6",
+          royal: "#2563EB",
+          violet: "#8B5CF6",
+          purple: "#A855F7",
+          mint: "#10B981",
         },
       },
       fontFamily: {
@@ -35,27 +36,33 @@ const config: Config = {
         mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
       },
       animation: {
-        "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "pulse-fast": "pulse 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "float-subtle": "float 5s ease-in-out infinite",
-        "flow-line": "flow 2s linear infinite",
+        "liquid-pulse": "liquidPulse 6s ease-in-out infinite",
+        "water-wave": "waterWave 14s ease-in-out infinite alternate",
+        "caustic-drift": "causticDrift 25s linear infinite",
+        "float-gentle": "floatGentle 6s ease-in-out infinite",
       },
       keyframes: {
-        float: {
+        liquidPulse: {
+          "0%, 100%": { transform: "scale(1)", opacity: "0.4" },
+          "50%": { transform: "scale(1.08)", opacity: "0.8" },
+        },
+        waterWave: {
+          "0%": { transform: "translateX(0) translateY(0)" },
+          "50%": { transform: "translateX(-25px) translateY(10px)" },
+          "100%": { transform: "translateX(25px) translateY(-10px)" },
+        },
+        causticDrift: {
+          "0%": { backgroundPosition: "0% 0%" },
+          "100%": { backgroundPosition: "100% 100%" },
+        },
+        floatGentle: {
           "0%, 100%": { transform: "translateY(0px)" },
-          "50%": { transform: "translateY(-6px)" },
+          "50%": { transform: "translateY(-8px)" },
         },
-        flow: {
-          "0%": { strokeDashoffset: "24" },
-          "100%": { strokeDashoffset: "0" },
-        },
-      },
-      backgroundImage: {
-        "grid-fine": "linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px)",
-        "dots-fine": "radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px)",
       },
     },
   },
   plugins: [],
 };
+
 export default config;

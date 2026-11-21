@@ -24,8 +24,8 @@ export default function ResumeViewerModal({ isOpen, onClose }: ResumeModalProps)
 
   const markdownResume = `# INDERJEET SINGH BAMRAH
 Full-Stack Developer | Software Architect | UI/UX Designer | Product Engineer
-Email: inderjeet.bamrah@gmail.com | Location: India
-GitHub: https://github.com/inderjeetsingh | LinkedIn: https://linkedin.com/in/inderjeetsinghbamrah
+Email: inderjeet.sbamrah@gmail.com | Location: India
+GitHub: https://github.com/inderjeetsinghbamrah | LinkedIn: https://linkedin.com/in/inderjeetsinghbamrah
 
 ## PROFESSIONAL SUMMARY
 Software Architect and Senior Full-Stack Engineer with an academic background holding an M.Tech in Computer Science/IT and B.Tech in IT. Experienced as a university Assistant Professor and currently Lecturer in Information Technology. Specializes in building scalable SaaS products, distributed systems, resilient PostgreSQL databases, and high-craft UI/UX interfaces.

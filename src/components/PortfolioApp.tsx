@@ -1,120 +1,91 @@
 "use client";
 
 import React, { useState } from "react";
-import Navbar from "@/components/layout/Navbar";
-import HeroExperience from "@/components/sections/HeroExperience";
-import InteractiveAbout from "@/components/sections/InteractiveAbout";
-import TechnologyConstellation from "@/components/sections/TechnologyConstellation";
-import ProjectLab from "@/components/sections/ProjectLab";
-import ArchitecturePlayground from "@/components/sections/ArchitecturePlayground";
-import DesignLab from "@/components/sections/DesignLab";
-import DeveloperPlayground from "@/components/sections/DeveloperPlayground";
-import ExperienceTimeline from "@/components/sections/ExperienceTimeline";
-import ContactExperience from "@/components/sections/ContactExperience";
-import Footer from "@/components/layout/Footer";
+import FluidSmoothScroll from "@/components/fluid/FluidSmoothScroll";
+import FluidNavbar from "@/components/fluid/FluidNavbar";
+import FluidHero from "@/components/fluid/FluidHero";
+import FluidAbout from "@/components/fluid/FluidAbout";
+import FluidTechStack from "@/components/fluid/FluidTechStack";
+import FluidProjects from "@/components/fluid/FluidProjects";
+import FluidPhilosophy from "@/components/fluid/FluidPhilosophy";
+import FluidExperience from "@/components/fluid/FluidExperience";
+import FluidContact from "@/components/fluid/FluidContact";
+import FluidFooter from "@/components/fluid/FluidFooter";
+import FluidWaveDivider from "@/components/fluid/FluidWaveDivider";
 import CommandPalette from "@/components/ui/CommandPalette";
 import ResumeViewerModal from "@/components/ui/ResumeViewerModal";
-import { Profile, ProjectCategory, Technology, Project, Experience, Education, ArchitectureDemo } from "@/types/portfolio";
-import { SectorProvider } from "@/context/SectorContext";
 
-interface PortfolioAppProps {
-  initialData: {
-    profile: Profile;
-    categories: ProjectCategory[];
-    technologies: Technology[];
-    projects: Project[];
-    experience: Experience[];
-    education: Education[];
-    architectureDemos: ArchitectureDemo[];
-  };
-}
-
-export default function PortfolioApp({ initialData }: PortfolioAppProps) {
+export default function PortfolioApp() {
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [resumeOpen, setResumeOpen] = useState(false);
-
-  const { profile, categories, technologies, projects, experience, education, architectureDemos } = initialData;
 
   const scrollToProjects = () => {
     const el = document.getElementById("projects");
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
+  const scrollToContact = () => {
+    const el = document.getElementById("contact");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <SectorProvider>
-      <div className="min-h-screen bg-[#08090C] text-slate-100 selection:bg-indigo-500/30 selection:text-white">
-        {/* Streamlined, Non-crowded Top Navigation */}
-        <Navbar
-          onOpenCommandPalette={() => setCommandPaletteOpen(true)}
+    <FluidSmoothScroll>
+      <div className="min-h-screen bg-ocean-deep text-slate-100 selection:bg-cyan-500/30 selection:text-white relative">
+        {/* Floating Fluid Glass Capsule Navigation */}
+        <FluidNavbar
           onOpenResume={() => setResumeOpen(true)}
-          availabilityStatus={profile.availability_status}
-          isAvailable={profile.is_available}
+          onOpenCommandPalette={() => setCommandPaletteOpen(true)}
         />
 
         <main>
-          {/* Section 1: Hero & Interactive Digital Engineering Workspace */}
-          <HeroExperience
-            name={profile.full_name}
-            professionalIdentity={profile.professional_identity}
-            headline={profile.headline}
-            subheadline={profile.subheadline}
-            availabilityStatus={profile.availability_status}
-            onOpenResume={() => setResumeOpen(true)}
-            onViewProjects={scrollToProjects}
+          {/* Section 1: Cinematic Fluid Hero with 3D Liquid Mesh */}
+          <FluidHero
+            onExploreWork={scrollToProjects}
+            onCollaborate={scrollToContact}
           />
 
-          {/* Section 2: Interactive About & Philosophy Workbench */}
-          <InteractiveAbout
-            positioning={profile.positioning}
-            bio={profile.bio}
-            interests={profile.interests}
-            philosophy={profile.philosophy}
-          />
+          {/* Organic Wave Transition into About */}
+          <FluidWaveDivider fromColor="#030712" toColor="#030712" />
+
+          {/* Section 2: Beyond Writing Code (Editorial Journey & Pedagogy) */}
+          <FluidAbout />
+
+          {/* Organic Wave Transition into Tech Stack */}
+          <FluidWaveDivider fromColor="#030712" toColor="#04091A" />
 
           {/* Section 3: Interactive Technology Constellation */}
-          <TechnologyConstellation
-            technologies={technologies}
-            projects={projects}
-          />
+          <FluidTechStack />
 
-          {/* Section 4: Project Lab (Featured: EDUOBAL live sandbox) */}
-          <ProjectLab
-            projects={projects}
-            categories={categories}
-          />
+          {/* Organic Wave Transition into Projects */}
+          <FluidWaveDivider fromColor="#04091A" toColor="#030712" />
 
-          {/* Section 5: System Architecture Playground */}
-          <ArchitecturePlayground
-            demos={architectureDemos}
-          />
+          {/* Section 4: Product Lab & Immersive Project Showcases */}
+          <FluidProjects />
 
-          {/* Section 6: Design Engineering Lab */}
-          <DesignLab />
+          {/* Organic Wave Transition into Philosophy */}
+          <FluidWaveDivider fromColor="#030712" toColor="#04091A" />
 
-          {/* Section 7: Developer Playground (Terminal, Live API runner, ERD) */}
-          <DeveloperPlayground
-            onOpenResume={() => setResumeOpen(true)}
-          />
+          {/* Section 5: Design & Engineering Philosophy River */}
+          <FluidPhilosophy />
 
-          {/* Section 8: Chronological Experience & Education Timeline */}
-          <ExperienceTimeline
-            experience={experience}
-            education={education}
-          />
+          {/* Organic Wave Transition into Experience */}
+          <FluidWaveDivider fromColor="#04091A" toColor="#030712" />
 
-          {/* Section 9: Secure Contact Transmission Experience */}
-          <ContactExperience
-            email={profile.email}
-            githubUrl={profile.github_url}
-            linkedinUrl={profile.linkedin_url}
-            onOpenResume={() => setResumeOpen(true)}
-          />
+          {/* Section 6: Professional Career & Academic Chronology */}
+          <FluidExperience />
+
+          {/* Organic Wave Transition into Contact */}
+          <FluidWaveDivider fromColor="#030712" toColor="#04091A" />
+
+          {/* Section 7: Radiant Liquid Contact & Encrypted Transmission */}
+          <FluidContact onOpenResume={() => setResumeOpen(true)} />
         </main>
 
-        {/* Global Engineering Footer */}
-        <Footer />
+        {/* Fluid Editorial Footer */}
+        <FluidFooter />
 
-        {/* Modals */}
+        {/* Global Dialog Modals */}
         <CommandPalette
           isOpen={commandPaletteOpen}
           onClose={() => setCommandPaletteOpen(false)}
@@ -129,6 +100,6 @@ export default function PortfolioApp({ initialData }: PortfolioAppProps) {
           onClose={() => setResumeOpen(false)}
         />
       </div>
-    </SectorProvider>
+    </FluidSmoothScroll>
   );
 }
