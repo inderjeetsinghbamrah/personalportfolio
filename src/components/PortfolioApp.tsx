@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { ThemeProvider } from "@/context/ThemeContext";
 import FluidSmoothScroll from "@/components/fluid/FluidSmoothScroll";
 import FluidNavbar from "@/components/fluid/FluidNavbar";
 import FluidHero from "@/components/fluid/FluidHero";
@@ -31,16 +30,14 @@ export default function PortfolioApp() {
   };
 
   return (
-    <ThemeProvider>
-      <FluidSmoothScroll>
-        <div
+    <FluidSmoothScroll>
+      <div
           className="min-h-screen selection:bg-cyan-500/30 selection:text-white relative transition-colors duration-300"
           style={{ backgroundColor: "var(--canvas-bg)", color: "var(--text-primary)" }}
         >
           {/* Floating Fluid Glass Capsule Navigation */}
           <FluidNavbar
             onOpenResume={() => setResumeOpen(true)}
-            onOpenCommandPalette={() => setCommandPaletteOpen(true)}
           />
 
         <main>
@@ -106,6 +103,5 @@ export default function PortfolioApp() {
         />
       </div>
     </FluidSmoothScroll>
-  </ThemeProvider>
   );
 }

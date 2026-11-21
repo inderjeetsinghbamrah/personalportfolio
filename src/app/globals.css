@@ -3,11 +3,12 @@
 @tailwind utilities;
 
 /* =========================================================
-   TWO INTENTIONAL MODES: DARK & BRIGHT
+   EXCLUSIVE LUXURY DARK THEME (FLUID WATER & MIDNIGHT ABYSS)
    ========================================================= */
 
 :root,
-html.dark {
+html,
+body {
   --canvas-bg: #070B14;
   --surface-bg: #0C1222;
   --card-bg: rgba(14, 23, 46, 0.78);
@@ -31,46 +32,13 @@ html.dark {
   --background: var(--canvas-bg);
   --foreground: var(--text-primary);
 
-  background-color: var(--canvas-bg);
-  color: var(--text-primary);
+  background-color: #070B14;
+  color: #FFFFFF;
   color-scheme: dark;
-}
-
-html.light {
-  --canvas-bg: #F8FAFC;
-  --surface-bg: #EEF2F6;
-  --card-bg: #FFFFFF;
-  --card-hover: #FFFFFF;
-  --text-primary: #090D16;
-  --text-secondary: #334155;
-  --text-muted: #64748B;
-  --border-subtle: rgba(15, 23, 42, 0.1);
-  --border-highlight: rgba(37, 99, 235, 0.35);
-  --accent-cyan: #0284C7;
-  --accent-blue: #2563EB;
-  --accent-violet: #7C3AED;
-  --nav-bg: rgba(255, 255, 255, 0.9);
-
-  /* Fallback aliases */
-  --bg-primary: var(--canvas-bg);
-  --bg-secondary: var(--surface-bg);
-  --bg-card: var(--card-bg);
-  --bg-card-hover: var(--card-hover);
-  --border-color: var(--border-subtle);
-  --background: var(--canvas-bg);
-  --foreground: var(--text-primary);
-
-  background-color: var(--canvas-bg);
-  color: var(--text-primary);
-  color-scheme: light;
 }
 
 * {
   box-sizing: border-box;
-}
-
-html {
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body {
@@ -79,192 +47,22 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* =========================================================
-   LIGHT MODE CONTRAST & TYPOGRAPHY SYSTEM
-   ========================================================= */
-
-html.light h1,
-html.light h2,
-html.light h3,
-html.light h4,
-html.light .text-white,
-html.light .text-slate-100 {
-  color: #090D16 !important;
-}
-
-html.light p,
-html.light .text-slate-200,
-html.light .text-slate-300 {
-  color: #334155 !important;
-}
-
-html.light .text-slate-400 {
-  color: #64748B !important;
-}
-
-html.light .text-cyan-200,
-html.light .text-cyan-300,
-html.light .text-cyan-400 {
-  color: #0284C7 !important;
-}
-
-html.light .text-amber-400 {
-  color: #B45309 !important;
-}
-
-html.light .text-emerald-400 {
-  color: #047857 !important;
-}
-
-html.light .hover\:text-white:hover {
-  color: #090D16 !important;
-}
-
-html.light .group-hover\:text-white:hover,
-html.light .group:hover .group-hover\:text-white {
-  color: #090D16 !important;
-}
-
-html.light .rounded-3xl.border {
-  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.1), 0 0 0 1px rgba(15, 23, 42, 0.08) !important;
-}
-
-/* Cards & Surfaces in Light Mode */
-html.light .bg-ocean-abyss,
-html.light .bg-ocean-deep,
-html.light .fluid-glass,
-html.light .editorial-card {
-  background-color: #FFFFFF !important;
-  border-color: rgba(15, 23, 42, 0.1) !important;
-  color: #090D16 !important;
-  box-shadow: 0 16px 36px -12px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.03) !important;
-}
-
-html.light .bg-white\/\[0\.03\],
-html.light .bg-white\/\[0\.04\],
-html.light .bg-white\/\[0\.05\],
-html.light .bg-white\/\[0\.06\],
-html.light .bg-white\/\[0\.08\],
-html.light .bg-white\/\[0\.1\] {
-  background-color: #F1F5F9 !important;
-  color: #090D16 !important;
-}
-
-html.light .border-white\/\[0\.07\],
-html.light .border-white\/\[0\.08\],
-html.light .border-white\/\[0\.1\],
-html.light .border-white\/\[0\.12\],
-html.light .border-white\/\[0\.15\],
-html.light .border-white\/\[0\.2\] {
-  border-color: rgba(15, 23, 42, 0.12) !important;
-}
-
-/* Inner problem/solution boxes in light mode */
-html.light .bg-black\/20,
-html.light .bg-black\/25,
-html.light .bg-black\/30,
-html.light .bg-black\/35,
-html.light .bg-black\/40,
-html.light .bg-slate-900\/60 {
-  background-color: #F1F5F9 !important;
-  border-color: rgba(15, 23, 42, 0.08) !important;
-}
-
-/* Status pills & category badges in light mode */
-html.light .bg-cyan-950\/30,
-html.light .bg-cyan-950\/40,
-html.light .bg-cyan-950\/60,
-html.light .bg-cyan-950\/70 {
-  background-color: #E0F2FE !important;
-  border-color: #BAE6FD !important;
-  color: #0369A1 !important;
-}
-
-html.light .bg-emerald-950\/50,
-html.light .bg-emerald-500\/10 {
-  background-color: #ECFDF5 !important;
-  border-color: #A7F3D0 !important;
-  color: #047857 !important;
-}
-
-/* Secondary Action Buttons in Light Mode */
-html.light button.bg-white\/\[0\.05\],
-html.light button.bg-white\/\[0\.06\],
-html.light a.bg-white\/\[0\.03\],
-html.light a.bg-white\/\[0\.04\] {
-  background-color: #F1F5F9 !important;
-  border-color: #CBD5E1 !important;
-  color: #0F172A !important;
-}
-
-/* Form Inputs, Selects, and Textareas in Light Mode */
-html.light input,
-html.light textarea,
-html.light select,
-html.light option {
-  background-color: #FFFFFF !important;
-  color: #090D16 !important;
-  border-color: rgba(15, 23, 42, 0.15) !important;
-}
-
-html.light input::placeholder,
-html.light textarea::placeholder {
-  color: #64748B !important;
-}
-
-/* Navbar in Light Mode */
-html.light header {
-  border-color: rgba(15, 23, 42, 0.08) !important;
-}
-
-html.light header.backdrop-blur-xl {
-  background-color: var(--nav-bg) !important;
-  border-color: rgba(15, 23, 42, 0.08) !important;
-}
-
-html.light nav {
-  background-color: #FFFFFF !important;
-  border-color: rgba(15, 23, 42, 0.12) !important;
-  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.07) !important;
-}
-
-html.light nav button {
-  color: #475569 !important;
-}
-
-html.light nav button:hover {
-  color: #090D16 !important;
 }
 
 /* Radiant Fluid Text Gradient */
 .fluid-gradient-text {
-  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-cyan) 50%, var(--accent-blue) 100%);
+  background: linear-gradient(135deg, #FFFFFF 0%, #00F2FE 50%, #3B82F6 100%);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent !important;
-}
-
-html.light .fluid-gradient-text {
-  background: linear-gradient(135deg, #090D16 0%, #0284C7 50%, #2563EB 100%) !important;
-  -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
 }
 
 .fluid-gradient-cyan {
-  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-cyan) 60%, var(--accent-blue) 100%);
+  background: linear-gradient(135deg, #FFFFFF 0%, #00F2FE 60%, #3B82F6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent !important;
 }
 
-html.light .fluid-gradient-cyan {
-  background: linear-gradient(135deg, #0284C7 0%, #2563EB 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-}
-
-/* Fluid Glass Card (Dark Default) */
+/* Fluid Glass Card */
 .fluid-glass {
   background: var(--card-bg);
   backdrop-filter: blur(20px);
@@ -277,6 +75,11 @@ html.light .fluid-gradient-cyan {
 .fluid-glass:hover {
   border-color: var(--border-highlight);
   background: var(--card-hover);
+}
+
+/* Card Depth */
+.rounded-3xl.border {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 /* Lenis Smooth Scroll CSS */
@@ -294,6 +97,10 @@ html.lenis, html.lenis body {
 
 .lenis.lenis-stopped {
   overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }
 
 /* Selection */
@@ -324,13 +131,7 @@ html.lenis, html.lenis body {
 /* Print Styles */
 @media print {
   body {
-    background: #ffffff !important;
+    background: #FFFFFF !important;
     color: #000000 !important;
-  }
-  .no-print {
-    display: none !important;
-  }
-  .print-only {
-    display: block !important;
   }
 }

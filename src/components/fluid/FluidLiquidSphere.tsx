@@ -2,13 +2,11 @@
 
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { useTheme } from "@/context/ThemeContext";
 
 export default function FluidLiquidSphere() {
   const mountRef = useRef<HTMLDivElement>(null);
   const mousePos = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 });
   const rippleEnergy = useRef(0);
-  const { isDark } = useTheme();
 
   useEffect(() => {
     const container = mountRef.current;
@@ -33,18 +31,18 @@ export default function FluidLiquidSphere() {
     container.appendChild(renderer.domElement);
 
     // 2. Liquid Lighting Rig
-    const ambientLight = new THREE.AmbientLight(isDark ? 0x06b6d4 : 0xbae6fd, isDark ? 0.8 : 1.2);
+    const ambientLight = new THREE.AmbientLight(0x06b6d4, 0.8);
     scene.add(ambientLight);
 
-    const cyanPoint = new THREE.PointLight(isDark ? 0x00f2fe : 0x0284c7, isDark ? 5 : 6, 20);
+    const cyanPoint = new THREE.PointLight(0x00f2fe, 5, 20);
     cyanPoint.position.set(4, 4, 5);
     scene.add(cyanPoint);
 
-    const oceanBluePoint = new THREE.PointLight(isDark ? 0x3b82f6 : 0x2563eb, isDark ? 4.5 : 5, 20);
+    const oceanBluePoint = new THREE.PointLight(0x3b82f6, 4.5, 20);
     oceanBluePoint.position.set(-4, -3, 3);
     scene.add(oceanBluePoint);
 
-    const violetPoint = new THREE.PointLight(isDark ? 0x8b5cf6 : 0x7c3aed, isDark ? 4 : 4, 15);
+    const violetPoint = new THREE.PointLight(0x8b5cf6, 4, 15);
     violetPoint.position.set(0, -4, -2);
     scene.add(violetPoint);
 
@@ -59,12 +57,12 @@ export default function FluidLiquidSphere() {
 
     // Translucent Liquid Physical Material with caustic reflections
     const material = new THREE.MeshPhysicalMaterial({
-      color: isDark ? 0x051329 : 0x38bdf8,
-      emissive: isDark ? 0x03224c : 0x0284c7,
-      emissiveIntensity: isDark ? 0.4 : 0.25,
-      roughness: isDark ? 0.15 : 0.08,
-      metalness: isDark ? 0.25 : 0.1,
-      transmission: isDark ? 0.65 : 0.85,
+      color: 0x051329,
+      emissive: 0x03224c,
+      emissiveIntensity: 0.4,
+      roughness: 0.15,
+      metalness: 0.25,
+      transmission: 0.65,
       ior: 1.333, // Water index of refraction
       reflectivity: 0.9,
       clearcoat: 1.0,
@@ -199,7 +197,7 @@ export default function FluidLiquidSphere() {
       geometry.dispose();
       material.dispose();
     };
-  }, [isDark]);
+  }, []);
 
   return (
     <div className="relative w-full h-full flex items-center justify-center">

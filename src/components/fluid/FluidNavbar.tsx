@@ -3,17 +3,15 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useScroll, motion } from "framer-motion";
-import { Volume2, VolumeX, FileText, Command, Menu, X, Shield } from "lucide-react";
+import { Volume2, VolumeX, FileText, Menu, X } from "lucide-react";
 import { sound } from "@/lib/sound";
 import { PORTFOLIO_CONTENT } from "@/data/portfolio-content";
-import ThemeToggle from "@/components/fluid/ThemeToggle";
 
 interface FluidNavbarProps {
   onOpenResume: () => void;
-  onOpenCommandPalette: () => void;
 }
 
-export default function FluidNavbar({ onOpenResume, onOpenCommandPalette }: FluidNavbarProps) {
+export default function FluidNavbar({ onOpenResume }: FluidNavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -133,25 +131,13 @@ export default function FluidNavbar({ onOpenResume, onOpenCommandPalette }: Flui
             })}
           </nav>
 
-          {/* Right Action Island */}
-          <div className="flex items-center gap-2.5 shrink-0">
-            {/* Live Availability Pill */}
-            <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 whitespace-nowrap">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-              </span>
-              <span className="text-[11px] font-semibold">Available</span>
-            </div>
-
-            {/* Dark / Bright Mode Toggle */}
-            <ThemeToggle />
-
-            {/* Sound Toggle */}
+          {/* Right Action Island - Clean & Uncluttered */}
+          <div className="flex items-center gap-3 shrink-0">
+            {/* Audio Toggle */}
             <button
               onClick={handleToggleSound}
               aria-label={isMuted ? "Unmute audio" : "Mute audio"}
-              className="h-8 w-8 rounded-full bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.1] flex items-center justify-center text-slate-300 hover:text-cyan-300 transition-colors"
+              className="h-8 w-8 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] flex items-center justify-center text-slate-400 hover:text-cyan-300 transition-colors"
               title={isMuted ? "Audio muted" : "Audio active"}
             >
               {isMuted ? <VolumeX className="w-3.5 h-3.5 text-slate-500" /> : <Volume2 className="w-3.5 h-3.5 text-cyan-400" />}
@@ -163,39 +149,16 @@ export default function FluidNavbar({ onOpenResume, onOpenCommandPalette }: Flui
                 sound.playTick();
                 onOpenResume();
               }}
-              className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.12] hover:border-cyan-400/40 text-xs font-medium text-slate-200 hover:text-white transition-all shadow-sm"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.12] hover:border-cyan-400/40 text-xs font-mono text-slate-200 hover:text-white transition-all shadow-sm"
             >
               <FileText className="w-3.5 h-3.5 text-cyan-400" />
               <span>Resume</span>
             </button>
 
-            {/* Command Palette Trigger */}
-            <button
-              onClick={() => {
-                sound.playTick();
-                onOpenCommandPalette();
-              }}
-              className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-cyan-950/40 hover:bg-cyan-900/50 border border-cyan-500/30 text-xs font-mono text-cyan-300 transition-all"
-              title="Command Menu (Cmd+K)"
-            >
-              <Command className="w-3.5 h-3.5" />
-              <span>⌘K</span>
-            </button>
-
-            {/* Admin Shield */}
-            <Link
-              href="/admin"
-              onClick={() => sound.playTick()}
-              className="p-1.5 text-slate-500 hover:text-cyan-400 transition-colors"
-              title="Admin Console"
-            >
-              <Shield className="w-4 h-4" />
-            </Link>
-
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-xl bg-white/[0.05] border border-white/[0.1] text-slate-300"
+              className="md:hidden p-1.5 rounded-xl bg-white/[0.05] border border-white/[0.1] text-slate-300"
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
