@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Terminal, Volume2, VolumeX, FileText, Command, Shield, ChevronDown } from "lucide-react";
 import { sound } from "@/lib/sound";
+import { useSector } from "@/context/SectorContext";
 
 interface NavbarProps {
   onOpenCommandPalette: () => void;
@@ -22,6 +23,7 @@ export default function Navbar({
   const [isMuted, setIsMuted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+  const { goToSector, activeSectorId } = useSector();
 
   useEffect(() => {
     setIsMuted(sound.getMuted());
@@ -38,18 +40,18 @@ export default function Navbar({
   };
 
   const primaryNav = [
-    { label: "Lab", href: "#lab" },
-    { label: "About", href: "#about" },
-    { label: "Stack", href: "#ecosystem" },
-    { label: "Projects", href: "#projects" },
-    { label: "Contact", href: "#contact" },
+    { label: "Lab", href: "#lab", sectorId: "lab" },
+    { label: "About", href: "#about", sectorId: "about" },
+    { label: "Stack", href: "#ecosystem", sectorId: "ecosystem" },
+    { label: "Projects", href: "#projects", sectorId: "projects" },
+    { label: "Contact", href: "#contact", sectorId: "contact" },
   ];
 
   const secondaryNav = [
-    { label: "System Architecture", href: "#architecture" },
-    { label: "Design Token Lab", href: "#design" },
-    { label: "Developer Playground", href: "#playground" },
-    { label: "Career & Education", href: "#timeline" },
+    { label: "System Architecture", href: "#architecture", sectorId: "architecture" },
+    { label: "Design Token Lab", href: "#design", sectorId: "design" },
+    { label: "Developer Playground", href: "#playground", sectorId: "playground" },
+    { label: "Career & Education", href: "#timeline", sectorId: "timeline" },
   ];
 
   return (
@@ -64,8 +66,11 @@ export default function Navbar({
         {/* Brand Monogram */}
         <Link
           href="#lab"
-          onClick={() => sound.playTick()}
-          className="group flex items-center gap-2.5 shrink-0 focus:outline-none"
+          onClick={() => {
+            sound.playTick();
+            goToSector("lab");
+          }}
+          className="group flex items-center gap-2.5 shrink-0 focus:outline-none whitespace-nowrap"
         >
           <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-500/20 to-sky-500/10 border border-white/[0.12] group-hover:border-indigo-500/60 flex items-center justify-center transition-all shadow-sm">
             <span className="font-mono text-xs font-bold tracking-wider text-white group-hover:text-indigo-300">
@@ -73,27 +78,37 @@ export default function Navbar({
             </span>
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-semibold tracking-tight text-white group-hover:text-indigo-200 transition-colors">
+            <span className="text-sm font-semibold tracking-tight text-white group-hover:text-indigo-200 transition-colors whitespace-nowrap">
               Inderjeet Singh Bamrah
             </span>
-            <span className="font-mono text-[10px] tracking-wider text-slate-400">
+            <span className="font-mono text-[10px] tracking-wider text-slate-400 whitespace-nowrap">
               Full-Stack Architect
             </span>
           </div>
         </Link>
 
         {/* Center Streamlined Primary Navigation (No wrap, high whitespace) */}
-        <nav className="hidden lg:flex items-center gap-1 bg-[#0E1017]/80 backdrop-blur-md border border-white/[0.08] rounded-full px-2 py-1 shadow-inner">
-          {primaryNav.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              onClick={() => sound.playTick()}
-              className="px-3 py-1 text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.06] rounded-full transition-all"
-            >
-              {item.label}
-            </a>
-          ))}
+        <nav className="hidden lg:flex items-center gap-1 bg-[#0E1017]/80 backdrop-blur-md border border-white/[0.08] rounded-full px-2 py-1 shadow-inner shrink-0">
+          {primaryNav.map((item) => {
+            const isActive = activeSectorId === item.sectorId;
+            return (
+              <a
+                key={item.href}
+                href={item.href}
+                onClick={(e) => {
+                  e.preventDefault();
+                  goToSector(item.sectorId);
+                }}
+                className={`px-3 py-1 text-xs font-medium rounded-full transition-all whitespace-nowrap ${
+                  isActive
+                    ? "bg-indigo-600/30 text-white font-semibold border border-indigo-500/40 shadow-sm"
+                    : "text-slate-300 hover:text-white hover:bg-white/[0.06]"
+                }`}
+              >
+                {item.label}
+              </a>
+            );
+          })}
 
           {/* More Dropdown for secondary sections */}
           <div className="relative">
@@ -102,7 +117,7 @@ export default function Navbar({
                 sound.playTick();
                 setMoreMenuOpen(!moreMenuOpen);
               }}
-              className="px-2.5 py-1 text-xs font-medium text-slate-400 hover:text-white hover:bg-white/[0.06] rounded-full transition-all flex items-center gap-1"
+              className="px-2.5 py-1 text-xs font-medium text-slate-400 hover:text-white hover:bg-white/[0.06] rounded-full transition-all flex items-center gap-1 whitespace-nowrap"
             >
               <span>More</span>
               <ChevronDown className="w-3 h-3" />
@@ -117,11 +132,12 @@ export default function Navbar({
                   <a
                     key={sec.href}
                     href={sec.href}
-                    onClick={() => {
-                      sound.playTick();
+                    onClick={(e) => {
+                      e.preventDefault();
                       setMoreMenuOpen(false);
+                      goToSector(sec.sectorId);
                     }}
-                    className="block px-3 py-1.5 text-xs text-slate-300 hover:text-white hover:bg-white/[0.06] transition-colors"
+                    className="block px-3 py-1.5 text-xs text-slate-300 hover:text-white hover:bg-white/[0.06] transition-colors whitespace-nowrap"
                   >
                     {sec.label}
                   </a>
@@ -132,10 +148,10 @@ export default function Navbar({
         </nav>
 
         {/* Right Compact Actions Bar (Clean, no overcrowding) */}
-        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 whitespace-nowrap">
           {/* Availability Status Dot Badge (Compact, non-overflowing) */}
           <div
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono ${
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono whitespace-nowrap shrink-0 ${
               isAvailable
                 ? "bg-emerald-500/[0.08] border border-emerald-500/20 text-emerald-400"
                 : "bg-slate-500/[0.08] border border-slate-500/20 text-slate-400"
@@ -150,14 +166,14 @@ export default function Navbar({
                 isAvailable ? "bg-emerald-500" : "bg-slate-500"
               }`}></span>
             </span>
-            <span className="text-[11px] font-semibold">{isAvailable ? "Available" : "Busy"}</span>
+            <span className="text-[11px] font-semibold whitespace-nowrap">{isAvailable ? "Available" : "Busy"}</span>
           </div>
 
           {/* Sound Toggle */}
           <button
             onClick={handleToggleSound}
             aria-label={isMuted ? "Unmute audio" : "Mute audio"}
-            className="h-8 w-8 rounded-lg bg-white/[0.04] border border-white/[0.08] hover:border-white/[0.2] flex items-center justify-center text-slate-400 hover:text-slate-200 transition-colors"
+            className="h-8 w-8 rounded-lg bg-white/[0.04] border border-white/[0.08] hover:border-white/[0.2] flex items-center justify-center text-slate-400 hover:text-slate-200 transition-colors shrink-0"
             title={isMuted ? "Audio muted" : "Audio active"}
           >
             {isMuted ? <VolumeX className="w-3.5 h-3.5 text-slate-500" /> : <Volume2 className="w-3.5 h-3.5 text-indigo-400" />}
@@ -169,7 +185,7 @@ export default function Navbar({
               sound.playTick();
               onOpenResume();
             }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.1] text-xs font-medium text-slate-200 hover:text-white transition-all shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.1] text-xs font-medium text-slate-200 hover:text-white transition-all shadow-sm whitespace-nowrap shrink-0"
           >
             <FileText className="w-3.5 h-3.5 text-indigo-400" />
             <span className="hidden sm:inline">Resume</span>
@@ -181,7 +197,7 @@ export default function Navbar({
               sound.playTick();
               onOpenCommandPalette();
             }}
-            className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-indigo-500/[0.12] hover:bg-indigo-500/[0.2] border border-indigo-500/30 text-xs font-mono text-indigo-300 hover:text-indigo-200 transition-all"
+            className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-indigo-500/[0.12] hover:bg-indigo-500/[0.2] border border-indigo-500/30 text-xs font-mono text-indigo-300 hover:text-indigo-200 transition-all whitespace-nowrap shrink-0"
             title="Open Command Palette (Cmd+K)"
           >
             <Command className="w-3.5 h-3.5" />
@@ -191,7 +207,7 @@ export default function Navbar({
           {/* Admin Link */}
           <Link
             href="/admin"
-            className="p-1.5 text-slate-500 hover:text-slate-300 transition-colors"
+            className="p-1.5 text-slate-500 hover:text-slate-300 transition-colors shrink-0"
             title="Admin Portal"
             onClick={() => sound.playTick()}
           >
@@ -201,7 +217,7 @@ export default function Navbar({
           {/* Mobile Menu Trigger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-1.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-slate-300"
+            className="lg:hidden p-1.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-slate-300 shrink-0"
             aria-label="Toggle Navigation Menu"
           >
             <Terminal className="w-4 h-4" />
@@ -216,9 +232,11 @@ export default function Navbar({
             <a
               key={item.href}
               href={item.href}
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 sound.playTick();
                 setMobileMenuOpen(false);
+                goToSector(item.sectorId);
               }}
               className="block px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/[0.05] rounded-md transition-colors"
             >

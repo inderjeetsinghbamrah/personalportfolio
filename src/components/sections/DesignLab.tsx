@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { sound } from "@/lib/sound";
 import { Palette, Check } from "lucide-react";
+import SectorGate from "@/components/character/SectorGate";
 
 export default function DesignLab() {
   const [sliderPos, setSliderPos] = useState<number>(50);
@@ -31,6 +32,15 @@ export default function DesignLab() {
   return (
     <section id="design" className="py-24 border-t border-white/[0.08] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        {/* Sector Gate 06: Design Lab */}
+        <SectorGate
+          sectorId="design"
+          actionButton={{
+            label: "Toggle Cyber Ice Theme",
+            onClick: () => handleThemeChange(selectedTheme === "cyber" ? "obsidian" : "cyber"),
+          }}
+        />
+
         {/* Section Header */}
         <div className="mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs font-mono text-indigo-400 mb-3">

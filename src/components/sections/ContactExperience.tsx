@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { sound } from "@/lib/sound";
 import { Mail, FileText, Send, CheckCircle2, AlertCircle, ShieldCheck } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/Icons";
+import SectorGate from "@/components/character/SectorGate";
 
 interface ContactProps {
   email: string;
@@ -75,6 +76,9 @@ export default function ContactExperience({
   return (
     <section id="contact" className="py-24 border-t border-white/[0.08] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        {/* Sector Gate 09: Secure Uplink */}
+        <SectorGate sectorId="contact" />
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Left Column: Direct Communication Channels */}
           <div className="lg:col-span-5 space-y-8">

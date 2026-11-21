@@ -16,6 +16,7 @@ import Footer from "@/components/layout/Footer";
 import CommandPalette from "@/components/ui/CommandPalette";
 import ResumeViewerModal from "@/components/ui/ResumeViewerModal";
 import { Profile, ProjectCategory, Technology, Project, Experience, Education, ArchitectureDemo } from "@/types/portfolio";
+import { SectorProvider } from "@/context/SectorContext";
 
 // Dynamically import 3D Character Companion for WebGL
 const ArchitectCharacter = dynamic(
@@ -47,95 +48,97 @@ export default function PortfolioApp({ initialData }: PortfolioAppProps) {
   };
 
   return (
-    <div className="min-h-screen bg-[#08090C] text-slate-100 selection:bg-indigo-500/30 selection:text-white">
-      {/* Streamlined, Non-crowded Top Navigation */}
-      <Navbar
-        onOpenCommandPalette={() => setCommandPaletteOpen(true)}
-        onOpenResume={() => setResumeOpen(true)}
-        availabilityStatus={profile.availability_status}
-        isAvailable={profile.is_available}
-      />
-
-      <main>
-        {/* Section 1: Hero & Interactive Digital Engineering Workspace */}
-        <HeroExperience
-          name={profile.full_name}
-          professionalIdentity={profile.professional_identity}
-          headline={profile.headline}
-          subheadline={profile.subheadline}
+    <SectorProvider>
+      <div className="min-h-screen bg-[#08090C] text-slate-100 selection:bg-indigo-500/30 selection:text-white">
+        {/* Streamlined, Non-crowded Top Navigation */}
+        <Navbar
+          onOpenCommandPalette={() => setCommandPaletteOpen(true)}
+          onOpenResume={() => setResumeOpen(true)}
           availabilityStatus={profile.availability_status}
-          onOpenResume={() => setResumeOpen(true)}
-          onViewProjects={scrollToProjects}
+          isAvailable={profile.is_available}
         />
 
-        {/* Section 2: Interactive About & Philosophy Workbench */}
-        <InteractiveAbout
-          positioning={profile.positioning}
-          bio={profile.bio}
-          interests={profile.interests}
-          philosophy={profile.philosophy}
+        <main>
+          {/* Section 1: Hero & Interactive Digital Engineering Workspace */}
+          <HeroExperience
+            name={profile.full_name}
+            professionalIdentity={profile.professional_identity}
+            headline={profile.headline}
+            subheadline={profile.subheadline}
+            availabilityStatus={profile.availability_status}
+            onOpenResume={() => setResumeOpen(true)}
+            onViewProjects={scrollToProjects}
+          />
+
+          {/* Section 2: Interactive About & Philosophy Workbench */}
+          <InteractiveAbout
+            positioning={profile.positioning}
+            bio={profile.bio}
+            interests={profile.interests}
+            philosophy={profile.philosophy}
+          />
+
+          {/* Section 3: Interactive Technology Constellation */}
+          <TechnologyConstellation
+            technologies={technologies}
+            projects={projects}
+          />
+
+          {/* Section 4: Project Lab (Featured: EDUOBAL live sandbox) */}
+          <ProjectLab
+            projects={projects}
+            categories={categories}
+          />
+
+          {/* Section 5: System Architecture Playground */}
+          <ArchitecturePlayground
+            demos={architectureDemos}
+          />
+
+          {/* Section 6: Design Engineering Lab */}
+          <DesignLab />
+
+          {/* Section 7: Developer Playground (Terminal, Live API runner, ERD) */}
+          <DeveloperPlayground
+            onOpenResume={() => setResumeOpen(true)}
+          />
+
+          {/* Section 8: Chronological Experience & Education Timeline */}
+          <ExperienceTimeline
+            experience={experience}
+            education={education}
+          />
+
+          {/* Section 9: Secure Contact Transmission Experience */}
+          <ContactExperience
+            email={profile.email}
+            githubUrl={profile.github_url}
+            linkedinUrl={profile.linkedin_url}
+            onOpenResume={() => setResumeOpen(true)}
+          />
+        </main>
+
+        {/* Floating 3D Character Companion ("Inderjeet / Architect Bot") */}
+        <ArchitectCharacter />
+
+        {/* Global Engineering Footer */}
+        <Footer />
+
+        {/* Modals */}
+        <CommandPalette
+          isOpen={commandPaletteOpen}
+          onClose={() => setCommandPaletteOpen(false)}
+          onOpenResume={() => {
+            setCommandPaletteOpen(false);
+            setResumeOpen(true);
+          }}
         />
 
-        {/* Section 3: Interactive Technology Constellation */}
-        <TechnologyConstellation
-          technologies={technologies}
-          projects={projects}
+        <ResumeViewerModal
+          isOpen={resumeOpen}
+          onClose={() => setResumeOpen(false)}
         />
-
-        {/* Section 4: Project Lab (Featured: EDUOBAL live sandbox) */}
-        <ProjectLab
-          projects={projects}
-          categories={categories}
-        />
-
-        {/* Section 5: System Architecture Playground */}
-        <ArchitecturePlayground
-          demos={architectureDemos}
-        />
-
-        {/* Section 6: Design Engineering Lab */}
-        <DesignLab />
-
-        {/* Section 7: Developer Playground (Terminal, Live API runner, ERD) */}
-        <DeveloperPlayground
-          onOpenResume={() => setResumeOpen(true)}
-        />
-
-        {/* Section 8: Chronological Experience & Education Timeline */}
-        <ExperienceTimeline
-          experience={experience}
-          education={education}
-        />
-
-        {/* Section 9: Secure Contact Transmission Experience */}
-        <ContactExperience
-          email={profile.email}
-          githubUrl={profile.github_url}
-          linkedinUrl={profile.linkedin_url}
-          onOpenResume={() => setResumeOpen(true)}
-        />
-      </main>
-
-      {/* Floating 3D Character Companion ("Inderjeet / Architect Bot") */}
-      <ArchitectCharacter />
-
-      {/* Global Engineering Footer */}
-      <Footer />
-
-      {/* Modals */}
-      <CommandPalette
-        isOpen={commandPaletteOpen}
-        onClose={() => setCommandPaletteOpen(false)}
-        onOpenResume={() => {
-          setCommandPaletteOpen(false);
-          setResumeOpen(true);
-        }}
-      />
-
-      <ResumeViewerModal
-        isOpen={resumeOpen}
-        onClose={() => setResumeOpen(false)}
-      />
-    </div>
+      </div>
+    </SectorProvider>
   );
 }

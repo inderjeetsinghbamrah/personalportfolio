@@ -1,8 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
-import { ArrowRight, FileText, Send, Activity, Layers, Server, Database, Box, Cpu, RefreshCw, Bot } from "lucide-react";
+import { ArrowRight, FileText, Send, Activity, Layers, Server, Database, Box, Cpu, RefreshCw, Play, GraduationCap, CheckCircle2 } from "lucide-react";
 import { sound } from "@/lib/sound";
+import dynamic from "next/dynamic";
+import SectorGate from "@/components/character/SectorGate";
+import { useSector } from "@/context/SectorContext";
+
+// Dynamically import 3D Character Hero Stage for client WebGL
+const HeroCharacterStage = dynamic(
+  () => import("@/components/character/HeroCharacterStage"),
+  { ssr: false }
+);
 
 interface HeroProps {
   name: string;
@@ -129,85 +138,117 @@ export default function HeroExperience({
     setSelectedNode(id);
   };
 
+  const { startGuidedTour } = useSector();
+
   const handleSimChange = (mode: "normal" | "spike" | "cache_miss" | "failover") => {
     sound.playTick();
     setSimMode(mode);
   };
 
   return (
-    <section id="lab" className="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden bg-grid">
+    <section id="lab" className="relative pt-28 pb-16 md:pt-36 md:pb-28 overflow-hidden bg-grid">
       {/* Subtle radial ambient spotlight */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-indigo-600/[0.08] blur-[140px] pointer-events-none rounded-full" />
       <div className="absolute top-1/3 right-10 w-[400px] h-[350px] bg-sky-500/[0.06] blur-[120px] pointer-events-none rounded-full" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-        {/* Top Meta Header */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-slate-300">
-            <span className="h-1.5 w-1.5 rounded-full bg-indigo-400 animate-pulse" />
-            <span>{name.toUpperCase()}{" // "}{professionalIdentity.toUpperCase()}</span>
+        {/* Sector Gate 01: Hero Command Deck */}
+        <SectorGate sectorId="lab" />
+
+        {/* 2-Column Desktop Grid: Storytelling & Action Left / 3D Developer Stage Right */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center mb-16">
+          {/* Left Column */}
+          <div className="lg:col-span-7 space-y-6">
+            {/* Top Identity Meta */}
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-slate-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-indigo-400 animate-pulse" />
+                <span>{name.toUpperCase()}{" // "}{professionalIdentity.toUpperCase()}</span>
+              </div>
+
+              <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
+                <span className="text-emerald-400">STATUS:</span>
+                <span>{availabilityStatus}</span>
+              </div>
+            </div>
+
+            {/* Headline */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white leading-[1.08]">
+              {headline}{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-sky-300 to-indigo-100">
+                Building What&apos;s Next.
+              </span>
+            </h1>
+
+            {/* Subheadline */}
+            <p className="text-base sm:text-lg text-slate-300 font-normal leading-relaxed max-w-2xl">
+              {subheadline}
+            </p>
+
+            {/* Action CTAs */}
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <button
+                onClick={startGuidedTour}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-semibold text-sm transition-all shadow-lg shadow-indigo-600/30 hover:shadow-indigo-500/40"
+              >
+                <Play className="w-4 h-4 text-sky-200 fill-sky-200" />
+                <span>Start Guided Tour</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  sound.playTick();
+                  onViewProjects();
+                }}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.12] text-slate-200 hover:text-white font-medium text-sm transition-all"
+              >
+                <span>Project Lab</span>
+                <ArrowRight className="w-4 h-4 text-indigo-400" />
+              </button>
+
+              <a
+                href="#contact"
+                onClick={() => sound.playTick()}
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] text-slate-300 hover:text-white font-medium text-sm transition-all"
+              >
+                <Send className="w-4 h-4 text-indigo-400" />
+                <span>Let&apos;s Connect</span>
+              </a>
+
+              <button
+                onClick={() => {
+                  sound.playTick();
+                  onOpenResume();
+                }}
+                className="inline-flex items-center gap-1.5 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] text-slate-300 hover:text-white font-mono text-xs transition-all"
+              >
+                <FileText className="w-3.5 h-3.5 text-sky-400" />
+                <span>Resume</span>
+              </button>
+            </div>
+
+            {/* Engineering Credential Pills */}
+            <div className="flex flex-wrap items-center gap-2 pt-2 text-[11px] font-mono text-slate-400">
+              <span className="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] flex items-center gap-1">
+                <GraduationCap className="w-3 h-3 text-indigo-400" />
+                M.Tech in CS/IT
+              </span>
+              <span className="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                Lecturer in Information Technology
+              </span>
+              <span className="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06]">
+                PostgreSQL 17 + Supabase
+              </span>
+              <span className="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06]">
+                Docker + Kubernetes
+              </span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
-            <span className="text-emerald-400">STATUS:</span>
-            <span>{availabilityStatus}</span>
-          </div>
-        </div>
-
-        {/* Hero Headline & Identity */}
-        <div className="max-w-4xl mb-12">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white mb-6 leading-[1.08]">
-            {headline}{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-sky-300 to-indigo-100">
-              Building What&apos;s Next.
-            </span>
-          </h1>
-
-          <p className="text-lg sm:text-xl text-slate-300 font-normal leading-relaxed max-w-3xl mb-8">
-            {subheadline}
-          </p>
-
-          {/* Action CTAs */}
-          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-            <button
-              onClick={() => {
-                sound.playTick();
-                onViewProjects();
-              }}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm transition-all shadow-lg shadow-indigo-600/25 hover:shadow-indigo-500/35"
-            >
-              <span>Explore Project Lab</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-
-            <a
-              href="#contact"
-              onClick={() => sound.playTick()}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.12] text-slate-200 hover:text-white font-medium text-sm transition-all"
-            >
-              <Send className="w-4 h-4 text-indigo-400" />
-              <span>Let&apos;s Connect</span>
-            </a>
-
-            <a
-              href="#about"
-              onClick={() => sound.playTick()}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 text-sky-300 hover:text-white font-medium text-sm transition-all"
-            >
-              <Bot className="w-4 h-4 text-sky-400" />
-              <span>Guided Character Tour</span>
-            </a>
-
-            <button
-              onClick={() => {
-                sound.playTick();
-                onOpenResume();
-              }}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] text-slate-300 hover:text-white font-medium text-sm transition-all"
-            >
-              <FileText className="w-4 h-4 text-sky-400" />
-              <span>Full Resume</span>
-            </button>
+          {/* Right Column: 3D Holographic Developer Character Stage */}
+          <div className="lg:col-span-5 flex justify-center">
+            <HeroCharacterStage />
           </div>
         </div>
 
