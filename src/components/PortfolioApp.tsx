@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import Navbar from "@/components/layout/Navbar";
 import HeroExperience from "@/components/sections/HeroExperience";
 import InteractiveAbout from "@/components/sections/InteractiveAbout";
@@ -15,6 +16,12 @@ import Footer from "@/components/layout/Footer";
 import CommandPalette from "@/components/ui/CommandPalette";
 import ResumeViewerModal from "@/components/ui/ResumeViewerModal";
 import { Profile, ProjectCategory, Technology, Project, Experience, Education, ArchitectureDemo } from "@/types/portfolio";
+
+// Dynamically import 3D Character Companion for WebGL
+const ArchitectCharacter = dynamic(
+  () => import("@/components/character/ArchitectCharacter"),
+  { ssr: false }
+);
 
 interface PortfolioAppProps {
   initialData: {
@@ -41,7 +48,7 @@ export default function PortfolioApp({ initialData }: PortfolioAppProps) {
 
   return (
     <div className="min-h-screen bg-[#08090C] text-slate-100 selection:bg-indigo-500/30 selection:text-white">
-      {/* Navbar with status & actions */}
+      {/* Streamlined, Non-crowded Top Navigation */}
       <Navbar
         onOpenCommandPalette={() => setCommandPaletteOpen(true)}
         onOpenResume={() => setResumeOpen(true)}
@@ -108,6 +115,9 @@ export default function PortfolioApp({ initialData }: PortfolioAppProps) {
           onOpenResume={() => setResumeOpen(true)}
         />
       </main>
+
+      {/* Floating 3D Character Companion ("Inderjeet / Architect Bot") */}
+      <ArchitectCharacter />
 
       {/* Global Engineering Footer */}
       <Footer />

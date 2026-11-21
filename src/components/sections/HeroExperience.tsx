@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ArrowRight, FileText, Send, Activity, Layers, Server, Database, Box, Cpu, RefreshCw } from "lucide-react";
+import { ArrowRight, FileText, Send, Activity, Layers, Server, Database, Box, Cpu, RefreshCw, Bot } from "lucide-react";
 import { sound } from "@/lib/sound";
 
 interface HeroProps {
@@ -187,6 +187,15 @@ export default function HeroExperience({
             >
               <Send className="w-4 h-4 text-indigo-400" />
               <span>Let&apos;s Connect</span>
+            </a>
+
+            <a
+              href="#about"
+              onClick={() => sound.playTick()}
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 text-sky-300 hover:text-white font-medium text-sm transition-all"
+            >
+              <Bot className="w-4 h-4 text-sky-400" />
+              <span>Guided Character Tour</span>
             </a>
 
             <button
