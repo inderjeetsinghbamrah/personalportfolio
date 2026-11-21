@@ -3,12 +3,11 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 export type ThemeId =
-  | "ocean-sapphire"
-  | "cosmic-violet"
+  | "deep-ocean"
+  | "cyber-violet"
   | "emerald-matrix"
-  | "daylight-clean"
-  | "sunset-cream"
-  | "aurora-bright";
+  | "daylight-studio"
+  | "sunset-atelier";
 
 export interface ThemeOption {
   id: ThemeId;
@@ -22,68 +21,58 @@ export interface ThemeOption {
 }
 
 export const THEME_OPTIONS: ThemeOption[] = [
-  // Dark Themes (Non-black, rich atmospheric palettes)
+  // 🌙 Atmospheric Dark Themes (Rich, non-flat-black palettes)
   {
-    id: "ocean-sapphire",
-    name: "Ocean Sapphire",
-    tagline: "Deep royal navy & electric cyan",
+    id: "deep-ocean",
+    name: "Deep Ocean",
+    tagline: "Royal navy abyss & electric cyan",
     type: "dark",
     primaryBg: "#060E20",
-    surfaceBg: "#0B1736",
+    surfaceBg: "#0A1633",
     accent: "#00F2FE",
     swatches: ["#060E20", "#00F2FE", "#3B82F6"],
   },
   {
-    id: "cosmic-violet",
+    id: "cyber-violet",
     name: "Cosmic Amethyst",
-    tagline: "Deep violet twilight & electric magenta",
+    tagline: "Velvety twilight violet & electric orchid",
     type: "dark",
-    primaryBg: "#0D061A",
-    surfaceBg: "#170D30",
+    primaryBg: "#0C071C",
+    surfaceBg: "#160D33",
     accent: "#C084FC",
-    swatches: ["#0D061A", "#8B5CF6", "#EC4899"],
+    swatches: ["#0C071C", "#A855F7", "#EC4899"],
   },
   {
     id: "emerald-matrix",
     name: "Cyber Emerald",
-    tagline: "Dark alpine slate & neon mint",
+    tagline: "Alpine slate charcoal & neon mint",
     type: "dark",
-    primaryBg: "#041410",
-    surfaceBg: "#09241D",
+    primaryBg: "#04130F",
+    surfaceBg: "#08241D",
     accent: "#10B981",
-    swatches: ["#041410", "#10B981", "#34D399"],
+    swatches: ["#04130F", "#10B981", "#34D399"],
   },
 
-  // Bright / Light Themes
+  // ☀️ Bright / Light Themes (High-contrast, zero eye strain)
   {
-    id: "daylight-clean",
-    name: "Daylight Minimal",
-    tagline: "Crisp Swiss white & royal electric blue",
+    id: "daylight-studio",
+    name: "Daylight Swiss",
+    tagline: "Pure architectural white & royal electric blue",
     type: "light",
     primaryBg: "#F8FAFC",
     surfaceBg: "#FFFFFF",
     accent: "#2563EB",
-    swatches: ["#FFFFFF", "#0F172A", "#2563EB"],
+    swatches: ["#F8FAFC", "#090D16", "#2563EB"],
   },
   {
-    id: "sunset-cream",
-    name: "Sunset Atelier",
-    tagline: "Warm luxury ivory & terracotta gold",
+    id: "sunset-atelier",
+    name: "Warm Atelier",
+    tagline: "Warm luxury cream & terracotta amber",
     type: "light",
-    primaryBg: "#FDFBF7",
-    surfaceBg: "#F6F0E6",
+    primaryBg: "#FAF7F2",
+    surfaceBg: "#FFFFFF",
     accent: "#D97706",
-    swatches: ["#FDFBF7", "#1C1917", "#D97706"],
-  },
-  {
-    id: "aurora-bright",
-    name: "Aurora Polar",
-    tagline: "Luminous mint mist & cyber teal",
-    type: "light",
-    primaryBg: "#F0FDF4",
-    surfaceBg: "#E0F7EB",
-    accent: "#059669",
-    swatches: ["#F0FDF4", "#064E3B", "#059669"],
+    swatches: ["#FAF7F2", "#1C1917", "#D97706"],
   },
 ];
 
@@ -98,10 +87,9 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeId>("ocean-sapphire");
+  const [theme, setThemeState] = useState<ThemeId>("deep-ocean");
 
   useEffect(() => {
-    // Check saved theme
     try {
       const saved = localStorage.getItem("isb-theme") as ThemeId;
       if (saved && THEME_OPTIONS.some((t) => t.id === saved)) {
@@ -132,19 +120,21 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const root = document.documentElement;
-    // Remove all previous theme classes
+    // Remove previous theme classes
     THEME_OPTIONS.forEach((t) => {
       root.classList.remove(`theme-${t.id}`);
     });
     // Add current theme class
     root.classList.add(`theme-${theme}`);
 
-    // Manage dark mode class for Tailwind
+    // Manage dark/light mode class
     if (isDark) {
       root.classList.add("dark");
+      root.classList.remove("light");
       root.style.colorScheme = "dark";
     } else {
       root.classList.remove("dark");
+      root.classList.add("light");
       root.style.colorScheme = "light";
     }
   }, [theme, isDark]);

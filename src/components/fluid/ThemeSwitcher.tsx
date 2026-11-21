@@ -60,16 +60,23 @@ export default function ThemeSwitcher() {
 
       {/* Floating Theme Palette Selector Popover */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-72 sm:w-80 rounded-2xl p-4 bg-ocean-abyss/95 border border-white/[0.15] backdrop-blur-2xl shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-200">
-          <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/[0.1]">
+        <div
+          className="absolute right-0 mt-2 w-72 sm:w-80 rounded-2xl p-4 border backdrop-blur-2xl shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-200"
+          style={{
+            backgroundColor: "var(--bg-card)",
+            borderColor: "var(--border-color)",
+            color: "var(--text-primary)",
+          }}
+        >
+          <div className="flex items-center justify-between pb-3 mb-3 border-b" style={{ borderColor: "var(--border-color)" }}>
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-cyan-400" />
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-white">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider">
                 Color Palette
               </span>
             </div>
             <span className="text-[11px] font-mono text-slate-400">
-              6 Handcrafted Themes
+              5 Curated Palettes
             </span>
           </div>
 
